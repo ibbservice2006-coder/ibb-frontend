@@ -129,6 +129,109 @@
 }
 
 @layer utilities {
+  /* Full luxury palette preview: page-scoped; global Portal tokens remain unchanged. */
+  .luxury-preview {
+    --background: 42 33% 94%;
+    --foreground: 165.33 61.64% 14.31%;
+    --card: 45 33% 98%;
+    --card-foreground: 165.33 61.64% 14.31%;
+    --primary: 165.33 61.64% 14.31%;
+    --secondary: 165.33 61.64% 14.31%;
+    --muted: 42 25% 89%;
+    --muted-foreground: 165.33 61.64% 14.31%;
+    --border: 42 20% 78%;
+    --input: 42 20% 78%;
+    --ring: 42 52% 57%;
+    --teal-primary: 165.33 61.64% 14.31%;
+    --teal-dark: 165.33 61.64% 14.31%;
+    --teal-darker: 165.33 61.64% 14.31%;
+    --gradient-primary: linear-gradient(135deg, #0e3b30 0%, #0e3b30 100%);
+    --gradient-hero: linear-gradient(180deg, #0e3b30 0%, #0e3b30 100%);
+    --gradient-dark: linear-gradient(180deg, #0e3b30 0%, #0e3b30 100%);
+    --gold: 42 52% 57%;
+    background-color: #f5f1e8;
+    color: #0e3b30;
+  }
+
+  .luxury-preview > header {
+    background-color: #0e3b30;
+    color: #f5f1e8;
+  }
+
+  .luxury-preview > header .bg-primary {
+    background-color: #0e3b30;
+  }
+
+  .luxury-preview > nav {
+    background-color: #bfa15b;
+    border-bottom: 1px solid #a78948;
+    color: #0e3b30;
+  }
+
+  .luxury-preview > nav a,
+  .luxury-preview > nav button {
+    color: #0e3b30;
+  }
+
+  .luxury-preview > nav select,
+  .luxury-preview > nav select option,
+  .luxury-preview > nav svg.text-secondary-foreground {
+    color: #bfa15b;
+  }
+
+  .luxury-preview .text-white,
+  .luxury-preview [class*="text-white/"],
+  .luxury-preview .text-primary-foreground,
+  .luxury-preview .text-secondary-foreground,
+  .luxury-preview [style*="color: white"] {
+    color: #bfa15b !important;
+  }
+
+  /* Keep navigation text readable on the gold nav background. */
+  .luxury-preview > nav a.text-secondary-foreground,
+  .luxury-preview > nav button.text-secondary-foreground {
+    color: #0e3b30 !important;
+  }
+
+  /* User-requested exception: keep only Trusted Premium Shuttle Service white. */
+  .luxury-preview > main > section#home h1[data-hero-title="trusted-premium"] {
+    color: #ffffff !important;
+  }
+
+  .luxury-preview > main {
+    background-color: #f5f1e8;
+    color: #0e3b30;
+  }
+
+  .luxury-preview > main > section.bg-background,
+  .luxury-preview > main > section.bg-muted {
+    background-color: #f5f1e8;
+    color: #0e3b30;
+  }
+
+  .luxury-preview > main > section.bg-primary,
+  .luxury-preview > main > section.bg-secondary {
+    background-color: #0e3b30;
+    color: #f5f1e8;
+  }
+
+  .luxury-preview > main > section.bg-secondary .bg-secondary {
+    background-color: #0e3b30;
+    border-color: rgba(201, 165, 91, 0.38);
+  }
+
+  .luxury-preview table th {
+    background-color: #fbfaf6 !important;
+    color: #0e3b30 !important;
+    border-color: #c9a55b !important;
+  }
+
+  .luxury-preview table td {
+    background-color: #0e3b30 !important;
+    color: #bfa15b !important;
+    border-color: #c9a55b !important;
+  }
+
   .text-gradient {
     @apply bg-clip-text text-transparent;
     background-image: var(--gradient-primary);

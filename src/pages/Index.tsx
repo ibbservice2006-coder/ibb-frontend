@@ -40,7 +40,7 @@ const Index = () => {
   }, [location.hash]);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="luxury-preview min-h-screen flex flex-col">
       <Header />
       <PublicNavigation />
       <main className="flex-1">

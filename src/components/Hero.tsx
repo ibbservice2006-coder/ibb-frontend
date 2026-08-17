@@ -21,7 +21,7 @@ const Hero = () => {
       />
 
       <div className="absolute z-10 top-[12%] left-0 right-0 text-center">
-        <h1 className="inline-block font-heading text-xl sm:text-2xl md:text-4xl lg:text-[49px] font-light md:font-normal lg:font-medium text-white animate-fade-in-up leading-tight [text-shadow:0_4px_20px_rgba(0,0,0,0.6),0_2px_8px_rgba(0,0,0,0.5)]">
+        <h1 data-hero-title="trusted-premium" className="inline-block font-heading text-xl sm:text-2xl md:text-4xl lg:text-[49px] font-light md:font-normal lg:font-medium text-white animate-fade-in-up leading-tight [text-shadow:0_4px_20px_rgba(0,0,0,0.6),0_2px_8px_rgba(0,0,0,0.5)]">
           {t('hero.title', 'Trusted Premium Shuttle Service')}
         </h1>
         <p className="sr-only text-white/[0.92]">

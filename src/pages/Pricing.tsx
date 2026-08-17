@@ -30,8 +30,8 @@ class PricingErrorBoundary extends Component<{ children: ReactNode }, { hasError
     if (this.state.hasError) {
       return (
         <div className="text-center py-12">
-          <p className="text-white text-lg mb-2">⚠️ Pricing table encountered an error</p>
-          <p className="text-white/60 text-sm mb-4">{this.state.error?.message}</p>
+          <p className="text-[#bfa15b] text-lg mb-2">⚠️ Pricing table encountered an error</p>
+          <p className="text-[#bfa15b]/60 text-sm mb-4">{this.state.error?.message}</p>
           <button
             onClick={() => this.setState({ hasError: false, error: null })}
             className="px-4 py-2 bg-white text-black rounded hover:bg-gray-200"
@@ -62,16 +62,16 @@ const routeIcons: Record<string, LucideIcon> = {
 // Static table renderers with dynamic price formatting
 const renderCarTable = (data: PriceRow[], tableId: string, t: (key: string, fb: string) => string, formatPrice: (price: number | string) => string) => (
   <div className="mb-6">
-    <p style={{ fontSize: '23px', fontWeight: 'bold', color: 'white' }} className="mb-2">
+    <p style={{ fontSize: '23px', fontWeight: 'bold', color: '#bfa15b' }} className="mb-2">
       {allTables.find(t2 => t2.id === tableId)?.title || tableId}
     </p>
     <table className="w-full" style={{ borderCollapse: 'collapse', fontFamily: 'Open Sans, sans-serif' }}>
       <thead>
         <tr>
-          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.distance', 'Distance')}</th>
-          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.destination', 'Destination')}</th>
-          <th colSpan={4} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.carSuv', 'Car & SUV')}</th>
-          <th colSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.limousine', 'Limousine')}</th>
+          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.distance', 'Distance')}</th>
+          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.destination', 'Destination')}</th>
+          <th colSpan={4} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.carSuv', 'Car & SUV')}</th>
+          <th colSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.limousine', 'Limousine')}</th>
         </tr>
         <tr>
           {[
@@ -82,7 +82,7 @@ const renderCarTable = (data: PriceRow[], tableId: string, t: (key: string, fb: 
             t('pricingPage.premium', 'Premium'),
             t('pricingPage.luxury', 'Luxury'),
           ].map(h => (
-            <th key={h} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{h}</th>
+            <th key={h} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{h}</th>
           ))}
         </tr>
       </thead>
@@ -90,7 +90,7 @@ const renderCarTable = (data: PriceRow[], tableId: string, t: (key: string, fb: 
         {data.map((row, i) => (
           <tr key={i}>
             {[row.distance, row.destination, formatPrice(row.standard), formatPrice(row.executive), formatPrice(row.family), formatPrice(row.electric), formatPrice(row.premium || "N/A"), formatPrice(row.luxury || "N/A")].map((val, ci) => (
-              <td key={ci} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#2d4f4f', color: 'white', padding: '8px', textAlign: 'center' }}>{val}</td>
+              <td key={ci} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#0e3b30', color: '#bfa15b', padding: '8px', textAlign: 'center' }}>{val}</td>
             ))}
           </tr>
         ))}
@@ -101,15 +101,15 @@ const renderCarTable = (data: PriceRow[], tableId: string, t: (key: string, fb: 
 
 const renderVanTable = (data: PriceRow[], tableId: string, t: (key: string, fb: string) => string, formatPrice: (price: number | string) => string) => (
   <div className="mb-6">
-    <p style={{ fontSize: '23px', fontWeight: 'bold', color: 'white' }} className="mb-2">
+    <p style={{ fontSize: '23px', fontWeight: 'bold', color: '#bfa15b' }} className="mb-2">
       {allTables.find(t2 => t2.id === tableId)?.title || tableId}
     </p>
     <table className="w-full" style={{ borderCollapse: 'collapse', fontFamily: 'Open Sans, sans-serif' }}>
       <thead>
         <tr>
-          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.distance', 'Distance')}</th>
-          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.destination', 'Destination')}</th>
-          <th colSpan={4} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.mpvVan', 'MPV/Van')}</th>
+          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.distance', 'Distance')}</th>
+          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.destination', 'Destination')}</th>
+          <th colSpan={4} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.mpvVan', 'MPV/Van')}</th>
         </tr>
         <tr>
           {[
@@ -118,7 +118,7 @@ const renderVanTable = (data: PriceRow[], tableId: string, t: (key: string, fb: 
             t('pricingPage.premium', 'Premium'),
             t('pricingPage.luxury', 'Luxury'),
           ].map(h => (
-            <th key={h} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{h}</th>
+            <th key={h} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{h}</th>
           ))}
         </tr>
       </thead>
@@ -126,7 +126,7 @@ const renderVanTable = (data: PriceRow[], tableId: string, t: (key: string, fb: 
         {data.map((row, i) => (
           <tr key={i}>
             {[row.distance, row.destination, formatPrice(row.standard), formatPrice(row.executive), formatPrice(row.family), formatPrice(row.electric)].map((val, ci) => (
-              <td key={ci} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#2d4f4f', color: 'white', padding: '8px', textAlign: 'center' }}>{val}</td>
+              <td key={ci} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#0e3b30', color: '#bfa15b', padding: '8px', textAlign: 'center' }}>{val}</td>
             ))}
           </tr>
         ))}
@@ -137,15 +137,15 @@ const renderVanTable = (data: PriceRow[], tableId: string, t: (key: string, fb: 
 
 const renderBusTable = (data: PriceRow[], tableId: string, t: (key: string, fb: string) => string, formatPrice: (price: number | string) => string) => (
   <div className="mb-6">
-    <p style={{ fontSize: '23px', fontWeight: 'bold', color: 'white' }} className="mb-2">
+    <p style={{ fontSize: '23px', fontWeight: 'bold', color: '#bfa15b' }} className="mb-2">
       {allTables.find(t2 => t2.id === tableId)?.title || tableId}
     </p>
     <table className="w-full" style={{ borderCollapse: 'collapse', fontFamily: 'Open Sans, sans-serif' }}>
       <thead>
         <tr>
-          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.distance', 'Distance')}</th>
-          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.destination', 'Destination')}</th>
-          <th colSpan={3} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.busCoach', 'BUS/Coach')}</th>
+          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.distance', 'Distance')}</th>
+          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.destination', 'Destination')}</th>
+          <th colSpan={3} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.busCoach', 'BUS/Coach')}</th>
         </tr>
         <tr>
           {[
@@ -153,7 +153,7 @@ const renderBusTable = (data: PriceRow[], tableId: string, t: (key: string, fb: 
             t('pricingPage.midSized', 'Mid-sized'),
             t('pricingPage.groupBus', 'Group Bus'),
           ].map(h => (
-            <th key={h} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{h}</th>
+            <th key={h} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{h}</th>
           ))}
         </tr>
       </thead>
@@ -161,7 +161,7 @@ const renderBusTable = (data: PriceRow[], tableId: string, t: (key: string, fb: 
         {data.map((row, i) => (
           <tr key={i}>
             {[row.distance, row.destination, formatPrice(row.standard), formatPrice(row.executive), formatPrice(row.family)].map((val, ci) => (
-              <td key={ci} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#2d4f4f', color: 'white', padding: '8px', textAlign: 'center' }}>{val}</td>
+              <td key={ci} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#0e3b30', color: '#bfa15b', padding: '8px', textAlign: 'center' }}>{val}</td>
             ))}
           </tr>
         ))}
@@ -198,7 +198,7 @@ const PricingPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="luxury-preview min-h-screen flex flex-col">
       <Header />
       <PublicNavigation />
 
@@ -217,10 +217,10 @@ const PricingPage = () => {
           style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.32) 0%, rgba(0,0,0,0.25) 35%, rgba(0,0,0,0.10) 65%, rgba(0,0,0,0.02) 100%)' }}
         />
         <div className="absolute z-10 top-[12%] left-0 right-0 text-center">
-          <h1 className="font-heading text-xl sm:text-2xl md:text-4xl lg:text-[49px] font-light md:font-normal lg:font-medium animate-fade-in-up leading-tight text-white [text-shadow:0_4px_20px_rgba(0,0,0,0.6),0_2px_8px_rgba(0,0,0,0.5)]">
+          <h1 className="font-heading text-xl sm:text-2xl md:text-4xl lg:text-[49px] font-light md:font-normal lg:font-medium animate-fade-in-up leading-tight text-[#bfa15b] [text-shadow:0_4px_20px_rgba(0,0,0,0.6),0_2px_8px_rgba(0,0,0,0.5)]">
             {t('pricingPage.heroTitle', 'Transparent Fixed Pricing')}
           </h1>
-          <p className="mt-6 text-lg sm:text-xl md:text-2xl lg:text-3xl font-light tracking-wider text-white/[0.92] [text-shadow:0_4px_20px_rgba(0,0,0,0.6),0_2px_8px_rgba(0,0,0,0.5)]">
+          <p className="mt-6 text-lg sm:text-xl md:text-2xl lg:text-3xl font-light tracking-wider text-[#bfa15b]/[0.92] [text-shadow:0_4px_20px_rgba(0,0,0,0.6),0_2px_8px_rgba(0,0,0,0.5)]">
             {t('pricingPage.heroSubtitle', 'Premium Service. No Hidden Fees.')}
           </p>
         </div>
@@ -234,9 +234,9 @@ const PricingPage = () => {
       </section>
 
       {/* Pricing Section */}
-      <section style={{ backgroundColor: '#2d4f4f' }} className="flex-1 px-3 py-3 sm:px-5 sm:py-3">
+      <section style={{ backgroundColor: '#0e3b30' }} className="flex-1 px-3 py-3 sm:px-5 sm:py-3">
         <div className="max-w-[1200px] mx-auto">
-          <h2 className="text-center text-xl sm:text-2xl md:text-[2rem] text-white mb-3 sm:mb-4">
+          <h2 className="text-center text-xl sm:text-2xl md:text-[2rem] text-[#bfa15b] mb-3 sm:mb-4">
             IBB Shuttle Service Price List
           </h2>
 
@@ -251,7 +251,7 @@ const PricingPage = () => {
                   className={cn(
                     "px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded transition-transform",
                     selectedVehicle === vehicle
-                      ? "bg-[#007BFF] text-white scale-95"
+                      ? "bg-[#007BFF] text-[#bfa15b] scale-95"
                       : "bg-white text-gray-800 hover:bg-gray-300"
                   )}
                 >
@@ -262,7 +262,7 @@ const PricingPage = () => {
 
             {/* Currency Selector — functional L3 */}
             <div className="flex items-center gap-2">
-              <span className="text-sm text-white/70">{t('pricingPage.currency', 'Currency')}:</span>
+              <span className="text-sm text-[#bfa15b]/70">{t('pricingPage.currency', 'Currency')}:</span>
               <select
                 value={selectedCurrency}
                 onChange={(e) => setSelectedCurrency(e.target.value)}
@@ -275,13 +275,13 @@ const PricingPage = () => {
                 ))}
               </select>
               {loading && (
-                <span className="text-xs text-white/50 animate-pulse">...</span>
+                <span className="text-xs text-[#bfa15b]/50 animate-pulse">...</span>
               )}
             </div>
           </div>
 
           {/* Route Heading */}
-          <h2 className="text-left text-xl sm:text-2xl md:text-[2rem] text-white mb-3 sm:mb-4 -mt-2 sm:-mt-8 ml-1 sm:ml-2">
+          <h2 className="text-left text-xl sm:text-2xl md:text-[2rem] text-[#bfa15b] mb-3 sm:mb-4 -mt-2 sm:-mt-8 ml-1 sm:ml-2">
             {t('pricingPage.route', 'Route')}
           </h2>
 
