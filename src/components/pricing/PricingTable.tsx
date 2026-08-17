@@ -19,7 +19,7 @@ const PricingTable = ({ table, currencyCode, formatPrice }: PricingTableProps) =
 
       {/* Table Content - matching spec exactly */}
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse" style={{ fontFamily: 'Arial, sans-serif' }}>
+        <table className="w-full border-collapse" style={{ fontFamily: 'Open Sans, sans-serif' }}>
           <thead>
             <tr>
               {table.headers.map((header) => (

@@ -65,7 +65,7 @@ const renderCarTable = (data: PriceRow[], tableId: string, t: (key: string, fb: 
     <p style={{ fontSize: '23px', fontWeight: 'bold', color: 'white' }} className="mb-2">
       {allTables.find(t2 => t2.id === tableId)?.title || tableId}
     </p>
-    <table className="w-full" style={{ borderCollapse: 'collapse', fontFamily: 'Arial, sans-serif' }}>
+    <table className="w-full" style={{ borderCollapse: 'collapse', fontFamily: 'Open Sans, sans-serif' }}>
       <thead>
         <tr>
           <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.distance', 'Distance')}</th>
@@ -104,7 +104,7 @@ const renderVanTable = (data: PriceRow[], tableId: string, t: (key: string, fb: 
     <p style={{ fontSize: '23px', fontWeight: 'bold', color: 'white' }} className="mb-2">
       {allTables.find(t2 => t2.id === tableId)?.title || tableId}
     </p>
-    <table className="w-full" style={{ borderCollapse: 'collapse', fontFamily: 'Arial, sans-serif' }}>
+    <table className="w-full" style={{ borderCollapse: 'collapse', fontFamily: 'Open Sans, sans-serif' }}>
       <thead>
         <tr>
           <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.distance', 'Distance')}</th>
@@ -140,7 +140,7 @@ const renderBusTable = (data: PriceRow[], tableId: string, t: (key: string, fb: 
     <p style={{ fontSize: '23px', fontWeight: 'bold', color: 'white' }} className="mb-2">
       {allTables.find(t2 => t2.id === tableId)?.title || tableId}
     </p>
-    <table className="w-full" style={{ borderCollapse: 'collapse', fontFamily: 'Arial, sans-serif' }}>
+    <table className="w-full" style={{ borderCollapse: 'collapse', fontFamily: 'Open Sans, sans-serif' }}>
       <thead>
         <tr>
           <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#2d4f4f', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.distance', 'Distance')}</th>
