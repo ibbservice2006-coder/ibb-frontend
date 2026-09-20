@@ -163,9 +163,11 @@
   }
 
   .luxury-preview > nav {
-    background-color: #bfa15b;
-    border-bottom: 1px solid #a78948;
+    background: linear-gradient(180deg, #f7e4a0 0%, #eed7a1 18%, #d4af37 48%, #c89b3b 72%, #996b1f 100%);
+    border-bottom: 0;
     color: #0e3b30;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .luxury-preview > nav a,
