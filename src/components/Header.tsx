@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/logoIBBservice.png";
 import originalLogo from "@/assets/logo.png";
+import silverLogo from "@/assets/logoIBBshuttleService.png";
 // home-icon.webp removed as per user request
 import thaiCornerOrnament from "@/assets/thai-corner-ornament.png";
 
@@ -78,7 +79,7 @@ const Header = ({ icon, iconAlt = "Home", restoreOriginalOnSmallScreens = false 
         >
           <Link to="/" aria-label="Back to Portal">
             <picture>
-              <source media="(min-width: 1280px)" srcSet={logo} />
+              <source media="(min-width: 1280px)" srcSet={restoreOriginalOnSmallScreens ? silverLogo : logo} />
               <img
                 src={restoreOriginalOnSmallScreens ? originalLogo : logo}
                 alt="IBB Service Logo"

@@ -172,6 +172,13 @@
     box-shadow: none;
   }
 
+  /* Landing nav trial: fuller champagne gold, especially around Balance & Payments. */
+  .luxury-preview:has(> main > section#home) > nav {
+    background:
+      linear-gradient(180deg, rgba(255, 250, 235, 0.12) 0%, transparent 46%, rgba(70, 49, 25, 0.07) 100%),
+      linear-gradient(100deg, #c3a153 0%, #ead59e 15%, #d2b26b 34%, #e7cd89 56%, #e6cc89 77%, #e3c781 92%, #dfc177 100%);
+  }
+
   .luxury-preview > nav a,
   .luxury-preview > nav button {
     color: #0e3b30;
@@ -485,6 +492,45 @@
     background:
       linear-gradient(90deg, #97753a 0%, #a98a48 10%, #bea263 18%, #ceb781 26%, #d8c395 34%, #ddcc9b 41%, #dfce9d 50%, #ddcc9b 59%, #d8c395 66%, #ceb781 74%, #bea263 82%, #a98a48 90%, #97753a 100%);
     color: #0e3b30 !important;
+  }
+
+  /* Raised hero and booking CTAs: nav-like lighting, unchanged typography and emerald/gold palette. */
+  .luxury-preview:has(> main > section#home) > main > section#home button,
+  .luxury-preview:has(> main > section#home) > main > section#booking button[type="submit"] {
+    color: #f5f1e8 !important;
+    background-image: linear-gradient(180deg, #295f4e 0%, #205442 18%, #0e3b30 48%, #0b3027 72%, #06231d 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(238, 247, 241, 0.4),
+      inset 0 -2px 0 rgba(0, 17, 12, 0.55),
+      0 3px 0 rgba(0, 20, 14, 0.45),
+      0 5px 7px rgba(0, 0, 0, 0.22);
+  }
+
+  /* Hero only: pulse the surface without scaling the label or changing typography. */
+  .luxury-preview:has(> main > section#home) > main > section#home button {
+    position: relative;
+    isolation: isolate;
+    overflow: visible;
+    animation: none;
+    transform: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .luxury-preview:has(> main > section#home) > main > section#home button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(180deg, #295f4e 0%, #205442 18%, #0e3b30 48%, #0b3027 72%, #06231d 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(238, 247, 241, 0.4),
+      inset 0 -2px 0 rgba(0, 17, 12, 0.55),
+      0 3px 0 rgba(0, 20, 14, 0.45),
+      0 5px 7px rgba(0, 0, 0, 0.22);
+    animation: blink 1.5s ease-in-out infinite;
   }
 
   }
