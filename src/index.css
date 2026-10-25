@@ -149,7 +149,7 @@
     --gradient-hero: linear-gradient(180deg, #0e3b30 0%, #0e3b30 100%);
     --gradient-dark: linear-gradient(180deg, #0e3b30 0%, #0e3b30 100%);
     --gold: 42 52% 57%;
-    background-color: #f5f1e8;
+    background-color: #ffffff;
     color: #0e3b30;
   }
 
@@ -201,14 +201,39 @@
   }
 
   .luxury-preview > main {
-    background-color: #f5f1e8;
+    background-color: #ffffff;
     color: #0e3b30;
   }
 
   .luxury-preview > main > section.bg-background,
   .luxury-preview > main > section.bg-muted {
-    background-color: #f5f1e8;
+    background-color: #ffffff;
     color: #0e3b30;
+  }
+
+  /* Raised About and Services cards: short contact shadow with a restrained ambient layer. */
+  .luxury-preview:has(> main > section#home) > main > section#about .grid > .bg-card {
+    box-shadow:
+      0 2px 3px rgba(18, 27, 24, 0.13),
+      0 6px 12px rgba(18, 27, 24, 0.065);
+  }
+
+  .luxury-preview:has(> main > section#home) > main > section#about .grid > .bg-card:hover {
+    box-shadow:
+      0 3px 4px rgba(18, 27, 24, 0.16),
+      0 8px 14px rgba(18, 27, 24, 0.09);
+  }
+
+  .luxury-preview:has(> main > section#home) > main > section#services .grid > .bg-card {
+    box-shadow:
+      0 3px 4px rgba(18, 27, 24, 0.15),
+      0 8px 16px rgba(18, 27, 24, 0.08);
+  }
+
+  .luxury-preview:has(> main > section#home) > main > section#services .grid > .bg-card:hover {
+    box-shadow:
+      0 4px 6px rgba(18, 27, 24, 0.17),
+      0 10px 18px rgba(18, 27, 24, 0.1);
   }
 
   .luxury-preview > main > section.bg-primary,
@@ -325,6 +350,11 @@
       linear-gradient(112deg, #041d18 0%, #07392e 25%, #05251f 52%, #062c24 76%, #031b17 100%);
   }
 
+  /* Landing clock trial: tighter, dimmer glow; border and clock face stay unchanged. */
+  .luxury-preview:has(> main > section#home) > header .rounded-full.shadow-glow {
+    box-shadow: 0 0 8px hsl(180 32% 29% / 0.12);
+  }
+
   /* White is limited to the footer address and Phone / Email contact lines. */
   .luxury-preview > footer#contact .space-y-2 > p,
   .luxury-preview > footer#contact .space-y-2 > p a {
@@ -354,6 +384,69 @@
   .luxury-preview > main > section.bg-secondary .text-white,
   .luxury-preview > main > section.bg-secondary [class*="text-white/"] {
     color: #edf3f4 !important;
+  }
+
+  /* Landing pricing: emerald metal bezel; no Portal styles or markup are changed. */
+  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div {
+    --pricing-metal-frame: linear-gradient(135deg, #082b22 0%, #24644e 18%, #b8d2c4 31%, #4d8a70 44%, #0c3a2e 58%, #2a644b 74%, #051e18 100%);
+    border: 8px solid #082b22;
+    border-radius: 24px;
+    padding: 22px;
+    background: #ffffff;
+    box-shadow: none;
+    scale: 1;
+    translate: 0 0;
+    z-index: 0;
+    transition:
+      scale 350ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      translate 350ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      box-shadow 350ms ease;
+  }
+
+  /* Keep the 6px metal layer 2px inside the outer edge of the parent's 8px border. */
+  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border: 6px solid transparent;
+    border-radius: 22px;
+    background:
+      linear-gradient(#ffffff, #ffffff) padding-box,
+      var(--pricing-metal-frame) border-box;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* The brighter metal frame remains on the selected card after the cursor leaves. */
+  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div.border-2 {
+    --pricing-metal-frame: linear-gradient(135deg, #092e24 0%, #347c5f 18%, #d1e1d6 31%, #72a58b 44%, #124736 58%, #3e7d5f 74%, #07261d 100%);
+    box-shadow: none;
+    z-index: 1;
+  }
+
+  @media (min-width: 1024px) {
+    .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div {
+      padding: 30px;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div:hover {
+      scale: 1.05;
+      translate: 0 -15px;
+      z-index: 2;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        0 40px 80px rgba(0, 0, 0, 0.22),
+        0 0 40px rgba(14, 59, 48, 0.12);
+    }
+  }
+
+  /* Landing quote buttons: smooth satin gold, darker edges and a brighter centre. */
+  .luxury-preview:has(> main > section#home) > main > section#pricing button.w-full {
+    background:
+      linear-gradient(90deg, #97753a 0%, #a98a48 10%, #bea263 18%, #ceb781 26%, #d8c395 34%, #ddcc9b 41%, #dfce9d 50%, #ddcc9b 59%, #d8c395 66%, #ceb781 74%, #bea263 82%, #a98a48 90%, #97753a 100%);
+    color: #0e3b30 !important;
   }
 
   .text-gradient {
