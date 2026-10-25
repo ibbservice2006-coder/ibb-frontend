@@ -41,7 +41,7 @@ const Index = () => {
 
   return (
     <div className="luxury-preview min-h-screen flex flex-col">
-      <Header />
+      <Header restoreOriginalOnSmallScreens />
       <PublicNavigation />
       <main className="flex-1">
         <Hero />
@@ -57,7 +57,7 @@ const Index = () => {
       {/* Floating Back to Portal button */}
       <Link
         to="/"
-        className="fixed bottom-[72px] md:bottom-[100px] left-6 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-primary-foreground text-sm font-medium shadow-lg hover:bg-primary/90 transition-all hover:scale-105"
+        className="fixed bottom-6 xl:bottom-[100px] left-6 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-primary-foreground text-sm font-medium shadow-lg hover:bg-primary/90 transition-all hover:scale-105"
       >
         <ArrowLeft className="w-4 h-4" />
         Portal

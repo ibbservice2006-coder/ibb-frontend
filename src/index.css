@@ -129,6 +129,8 @@
 }
 
 @layer utilities {
+  /* Desktop-only styling. Smaller screens retain the original teal/white design. */
+  @media (min-width: 1280px) {
   /* Full luxury palette preview: page-scoped; global Portal tokens remain unchanged. */
   .luxury-preview {
     --background: 42 33% 94%;
@@ -213,15 +215,33 @@
 
   /* Raised About and Services cards: short contact shadow with a restrained ambient layer. */
   .luxury-preview:has(> main > section#home) > main > section#about .grid > .bg-card {
+    background:
+      linear-gradient(145deg, #164237 0%, #10382e 48%, #081f1b 100%),
+      #0e3b30;
     box-shadow:
-      0 2px 3px rgba(18, 27, 24, 0.13),
-      0 6px 12px rgba(18, 27, 24, 0.065);
+      inset 0 1px 0 rgba(229, 244, 235, 0.3),
+      inset 0 -1px 0 rgba(8, 30, 22, 0.2),
+      0 3px 4px rgba(18, 27, 24, 0.2),
+      0 7px 12px rgba(18, 27, 24, 0.085);
   }
 
   .luxury-preview:has(> main > section#home) > main > section#about .grid > .bg-card:hover {
     box-shadow:
-      0 3px 4px rgba(18, 27, 24, 0.16),
-      0 8px 14px rgba(18, 27, 24, 0.09);
+      inset 0 1px 0 rgba(229, 244, 235, 0.34),
+      inset 0 -1px 0 rgba(8, 30, 22, 0.22),
+      0 4px 5px rgba(18, 27, 24, 0.22),
+      0 9px 14px rgba(18, 27, 24, 0.1);
+  }
+
+  /* Borderless emerald About cards: white copy with a soft raised surface. */
+  .luxury-preview:has(> main > section#home) > main > section#about .grid > .bg-card h3,
+  .luxury-preview:has(> main > section#home) > main > section#about .grid > .bg-card p,
+  .luxury-preview:has(> main > section#home) > main > section#about .grid > .bg-card svg {
+    color: #ffffff !important;
+  }
+
+  .luxury-preview:has(> main > section#home) > main > section#about .grid > .bg-card > .rounded-full {
+    background: rgba(255, 255, 255, 0.08);
   }
 
   .luxury-preview:has(> main > section#home) > main > section#services .grid > .bg-card {
@@ -386,13 +406,19 @@
     color: #edf3f4 !important;
   }
 
-  /* Landing pricing: emerald metal bezel; no Portal styles or markup are changed. */
+  /* Landing pricing: Portal frame trial; original Portal styles and markup stay untouched. */
   .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div {
-    --pricing-metal-frame: linear-gradient(135deg, #082b22 0%, #24644e 18%, #b8d2c4 31%, #4d8a70 44%, #0c3a2e 58%, #2a644b 74%, #051e18 100%);
-    border: 8px solid #082b22;
-    border-radius: 24px;
+    --pricing-metal-frame: linear-gradient(to bottom right, #bf953f, #fcf6ba, #aa771c);
+    --pricing-card-surface:
+      radial-gradient(ellipse 89% 175% at 5% -44%, rgba(211, 223, 226, 0.04) 0%, rgba(211, 223, 226, 0.022) 48%, transparent 86%) padding-box,
+      radial-gradient(ellipse 42% 120% at 62% 73%, rgba(0, 12, 10, 0.1) 0%, transparent 76%) padding-box,
+      radial-gradient(ellipse 68% 145% at 28% 4%, rgba(41, 91, 73, 0.52) 0%, rgba(28, 69, 55, 0.2) 48%, transparent 82%) padding-box,
+      radial-gradient(ellipse 76% 150% at 92% 90%, rgba(2, 17, 14, 0.48) 0%, rgba(2, 17, 14, 0.16) 52%, transparent 88%) padding-box,
+      linear-gradient(#0e3b30, #0e3b30) padding-box;
+    border: 8px solid transparent;
+    border-radius: 50px;
     padding: 22px;
-    background: #ffffff;
+    background: var(--pricing-card-surface);
     box-shadow: none;
     scale: 1;
     translate: 0 0;
@@ -403,24 +429,22 @@
       box-shadow 350ms ease;
   }
 
-  /* Keep the 6px metal layer 2px inside the outer edge of the parent's 8px border. */
+  /* Match Portal's 8px frame and 50px outer / 42px inner corner radii. */
   .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div::before {
     content: "";
     position: absolute;
-    inset: -6px;
-    border: 6px solid transparent;
-    border-radius: 22px;
+    inset: -8px;
+    border: 8px solid transparent;
+    border-radius: 50px;
     background:
-      linear-gradient(#ffffff, #ffffff) padding-box,
+      var(--pricing-card-surface),
       var(--pricing-metal-frame) border-box;
     pointer-events: none;
     z-index: -1;
   }
 
-  /* The brighter metal frame remains on the selected card after the cursor leaves. */
+  /* Retain selection state while keeping Portal's original frame palette on every card. */
   .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div.border-2 {
-    --pricing-metal-frame: linear-gradient(135deg, #092e24 0%, #347c5f 18%, #d1e1d6 31%, #72a58b 44%, #124736 58%, #3e7d5f 74%, #07261d 100%);
-    box-shadow: none;
     z-index: 1;
   }
 
@@ -435,11 +459,25 @@
       scale: 1.05;
       translate: 0 -15px;
       z-index: 2;
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.5),
-        0 40px 80px rgba(0, 0, 0, 0.22),
-        0 0 40px rgba(14, 59, 48, 0.12);
+      box-shadow: none;
     }
+  }
+
+  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div:active {
+    scale: 0.98;
+  }
+
+  /* Emerald interior trial: white card copy; quote button colours remain untouched. */
+  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div h3,
+  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div p,
+  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div li,
+  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div li svg,
+  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div > .text-primary-foreground {
+    color: #ffffff !important;
+  }
+
+  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div > .bg-muted\/50 {
+    background: rgba(0, 17, 13, 0.28);
   }
 
   /* Landing quote buttons: smooth satin gold, darker edges and a brighter centre. */
@@ -447,6 +485,8 @@
     background:
       linear-gradient(90deg, #97753a 0%, #a98a48 10%, #bea263 18%, #ceb781 26%, #d8c395 34%, #ddcc9b 41%, #dfce9d 50%, #ddcc9b 59%, #d8c395 66%, #ceb781 74%, #bea263 82%, #a98a48 90%, #97753a 100%);
     color: #0e3b30 !important;
+  }
+
   }
 
   .text-gradient {

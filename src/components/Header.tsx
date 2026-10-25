@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/logoIBBservice.png";
+import originalLogo from "@/assets/logo.png";
 // home-icon.webp removed as per user request
 import thaiCornerOrnament from "@/assets/thai-corner-ornament.png";
 
 interface HeaderProps {
   icon?: string;
   iconAlt?: string;
+  restoreOriginalOnSmallScreens?: boolean;
 }
 
 /**
@@ -26,7 +28,7 @@ const getBangkokTime = () => {
   };
 };
 
-const Header = ({ icon, iconAlt = "Home" }: HeaderProps) => {
+const Header = ({ icon, iconAlt = "Home", restoreOriginalOnSmallScreens = false }: HeaderProps) => {
   const [time, setTime] = useState(getBangkokTime);
 
   // Level 2: Activate live ticking after mount
@@ -75,11 +77,14 @@ const Header = ({ icon, iconAlt = "Home" }: HeaderProps) => {
           }}
         >
           <Link to="/" aria-label="Back to Portal">
-            <img
-              src={logo}
-              alt="IBB Service Logo"
-              className="h-[100px] w-auto object-contain translate-y-[2px] hover:opacity-80 transition-opacity cursor-pointer"
-            />
+            <picture>
+              <source media="(min-width: 1280px)" srcSet={logo} />
+              <img
+                src={restoreOriginalOnSmallScreens ? originalLogo : logo}
+                alt="IBB Service Logo"
+                className="h-[100px] w-auto object-contain translate-y-[2px] hover:opacity-80 transition-opacity cursor-pointer"
+              />
+            </picture>
           </Link>
 
           <div className="text-primary-foreground text-center">
@@ -149,11 +154,14 @@ const Header = ({ icon, iconAlt = "Home" }: HeaderProps) => {
       <div className="flex md:hidden items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3">
           <Link to="/" aria-label="Back to Portal">
-            <img
-              src={logo}
-              alt="IBB Service Logo"
-              className="h-[60px] sm:h-[74px] w-auto object-contain hover:opacity-80 transition-opacity cursor-pointer"
-            />
+            <picture>
+              <source media="(min-width: 1280px)" srcSet={logo} />
+              <img
+                src={restoreOriginalOnSmallScreens ? originalLogo : logo}
+                alt="IBB Service Logo"
+                className="h-[60px] sm:h-[74px] w-auto object-contain hover:opacity-80 transition-opacity cursor-pointer"
+              />
+            </picture>
           </Link>
           <div className="text-primary-foreground space-y-1">
             <h1 className="font-heading text-[1rem] sm:text-[1.18rem] font-bold">IBB Shuttle Service</h1>
