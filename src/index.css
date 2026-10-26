@@ -129,8 +129,8 @@
 }
 
 @layer utilities {
-  /* Desktop-only styling. Smaller screens retain the original teal/white design. */
-  @media (min-width: 1280px) {
+  /* Sandbox trial: current desktop finish at all widths; responsive layout remains unchanged. */
+  @media (min-width: 0px) {
   /* Full luxury palette preview: page-scoped; global Portal tokens remain unchanged. */
   .luxury-preview {
     --background: 42 33% 94%;
