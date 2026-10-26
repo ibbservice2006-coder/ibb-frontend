@@ -10,6 +10,7 @@ interface HeaderProps {
   icon?: string;
   iconAlt?: string;
   restoreOriginalOnSmallScreens?: boolean;
+  matchHomeOnDesktop?: boolean;
 }
 
 /**
@@ -29,7 +30,7 @@ const getBangkokTime = () => {
   };
 };
 
-const Header = ({ icon, iconAlt = "Home", restoreOriginalOnSmallScreens = false }: HeaderProps) => {
+const Header = ({ icon, iconAlt = "Home", restoreOriginalOnSmallScreens = false, matchHomeOnDesktop = false }: HeaderProps) => {
   const [time, setTime] = useState(getBangkokTime);
 
   // Level 2: Activate live ticking after mount
@@ -51,7 +52,7 @@ const Header = ({ icon, iconAlt = "Home", restoreOriginalOnSmallScreens = false 
   const romanNumbers = ["XII", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI"];
 
   return (
-    <header className="bg-primary relative overflow-hidden">
+    <header className="bg-primary relative overflow-hidden" data-home-desktop={restoreOriginalOnSmallScreens || matchHomeOnDesktop ? "true" : undefined}>
       {/* Thai Corner Ornament - Top Left */}
       <img
         src={thaiCornerOrnament}
@@ -79,7 +80,7 @@ const Header = ({ icon, iconAlt = "Home", restoreOriginalOnSmallScreens = false 
         >
           <Link to="/" aria-label="Back to Portal">
             <picture>
-              <source media="(min-width: 1280px)" srcSet={restoreOriginalOnSmallScreens ? silverLogo : logo} />
+              <source media="(min-width: 1280px)" srcSet={restoreOriginalOnSmallScreens || matchHomeOnDesktop ? silverLogo : logo} />
               <img
                 src={restoreOriginalOnSmallScreens ? originalLogo : logo}
                 alt="IBB Service Logo"

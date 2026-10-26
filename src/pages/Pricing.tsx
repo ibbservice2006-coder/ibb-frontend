@@ -199,7 +199,7 @@ const PricingPage = () => {
 
   return (
     <div className="luxury-preview min-h-screen flex flex-col">
-      <Header />
+      <Header matchHomeOnDesktop />
       <PublicNavigation />
 
       {/* Static Hero */}
