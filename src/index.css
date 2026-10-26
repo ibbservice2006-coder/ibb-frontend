@@ -204,6 +204,14 @@
     color: #0e3b30 !important;
   }
 
+  /* Landing header trial: white brand and clock text; typography and geometry stay unchanged. */
+  .luxury-preview:has(> main > section#home) > header h1,
+  .luxury-preview:has(> main > section#home) > header p,
+  .luxury-preview:has(> main > section#home) > header .rounded-full.shadow-glow > span,
+  .luxury-preview:has(> main > section#home) > header .rounded-full.shadow-glow > div.text-primary-foreground {
+    color: #ffffff !important;
+  }
+
   /* User-requested exception: keep only Trusted Premium Shuttle Service white. */
   .luxury-preview > main > section#home h1[data-hero-title="trusted-premium"] {
     color: #ffffff !important;
@@ -492,6 +500,40 @@
     background:
       linear-gradient(90deg, #97753a 0%, #a98a48 10%, #bea263 18%, #ceb781 26%, #d8c395 34%, #ddcc9b 41%, #dfce9d 50%, #ddcc9b 59%, #d8c395 66%, #ceb781 74%, #bea263 82%, #a98a48 90%, #97753a 100%);
     color: #0e3b30 !important;
+  }
+
+  /* Raised booking panel: defined contact shadows, without changing fields or layout. */
+  .luxury-preview:has(> main > section#home) > main > section#booking form.bg-card {
+    position: relative;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      0 2px 3px rgba(18, 27, 24, 0.12),
+      0 6px 8px -3px rgba(18, 27, 24, 0.18),
+      0 14px 22px -10px rgba(18, 27, 24, 0.13);
+  }
+
+  /* 12px frame: a solid dark outer edge contains the dimmer emerald-metal reflection. */
+  .luxury-preview:has(> main > section#home) > main > section#booking form.bg-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    border: 12px solid #031b17;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .luxury-preview:has(> main > section#home) > main > section#booking form.bg-card::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    box-sizing: border-box;
+    border: 10px solid transparent;
+    border-radius: 10px;
+    background: linear-gradient(to bottom right, #07392e, #355b4f, #031b17) border-box;
+    mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0) border-box;
+    mask-composite: exclude;
+    pointer-events: none;
   }
 
   /* Raised hero and booking CTAs: nav-like lighting, unchanged typography and emerald/gold palette. */
