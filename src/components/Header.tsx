@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/logoIBBservice.png";
+import originalLogo from "@/assets/logo.png";
 import silverLogo from "@/assets/logoIBBshuttleService.png";
 // home-icon.webp removed as per user request
 import thaiCornerOrnament from "@/assets/thai-corner-ornament.png";
@@ -80,7 +81,7 @@ const Header = ({ icon, iconAlt = "Home", restoreOriginalOnSmallScreens = false 
             <picture>
               <source media="(min-width: 1280px)" srcSet={restoreOriginalOnSmallScreens ? silverLogo : logo} />
               <img
-                src={restoreOriginalOnSmallScreens ? silverLogo : logo}
+                src={restoreOriginalOnSmallScreens ? originalLogo : logo}
                 alt="IBB Service Logo"
                 className="h-[100px] w-auto object-contain translate-y-[2px] hover:opacity-80 transition-opacity cursor-pointer"
               />
@@ -157,7 +158,7 @@ const Header = ({ icon, iconAlt = "Home", restoreOriginalOnSmallScreens = false 
             <picture>
               <source media="(min-width: 1280px)" srcSet={logo} />
               <img
-                src={restoreOriginalOnSmallScreens ? silverLogo : logo}
+                src={restoreOriginalOnSmallScreens ? originalLogo : logo}
                 alt="IBB Service Logo"
                 className="h-[60px] sm:h-[74px] w-auto object-contain hover:opacity-80 transition-opacity cursor-pointer"
               />
