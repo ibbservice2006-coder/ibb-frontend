@@ -172,8 +172,9 @@
     box-shadow: none;
   }
 
-  /* Landing nav trial: Pricing's raised vertical profile recoloured using the existing Get a Quote gold palette. */
-  .luxury-preview:has(> main > section#home) > nav {
+  /* Home and Pricing share the approved raised navigation and Get a Quote gold palette. */
+  .luxury-preview:has(> main > section#home) > nav,
+  .luxury-preview:has(> section#home) > nav {
     background:
       linear-gradient(180deg, #dfce9d 0%, #ddcc9b 18%, #ceb781 48%, #bea263 72%, #97753a 100%),
       #ceb781;
@@ -215,6 +216,33 @@
   /* User-requested exception: keep only Trusted Premium Shuttle Service white. */
   .luxury-preview > main > section#home h1[data-hero-title="trusted-premium"] {
     color: #ffffff !important;
+  }
+
+  /* Pricing keeps its own hero copy and typography; only the two text colours change. */
+  .luxury-preview > section#home h1,
+  .luxury-preview > section#home p {
+    color: #ffffff !important;
+  }
+
+  /* Pricing vehicle pills: Home's colours and shape, Pricing's original dimensions and state. */
+  .luxury-preview:has(> section#home) > section.flex-1 > div > div > div.flex.gap-2 > button {
+    border-radius: 9999px;
+    background-color: hsl(var(--card));
+    color: hsl(var(--muted-foreground));
+    border-color: hsl(var(--border));
+    box-shadow: none;
+  }
+
+  .luxury-preview:has(> section#home) > section.flex-1 > div > div > div.flex.gap-2 > button:hover {
+    background-color: hsl(var(--card) / 0.8);
+    color: hsl(var(--foreground));
+  }
+
+  .luxury-preview:has(> section#home) > section.flex-1 > div > div > div.flex.gap-2 > button.scale-95,
+  .luxury-preview:has(> section#home) > section.flex-1 > div > div > div.flex.gap-2 > button.scale-95:hover {
+    background-color: hsl(var(--primary));
+    color: #bfa15b;
+    box-shadow: var(--shadow-soft);
   }
 
   .luxury-preview > main {
@@ -509,7 +537,8 @@
     pointer-events: none;
   }
 
-  /* Raised hero and booking CTAs: nav-like lighting, unchanged typography and emerald/gold palette. */
+  /* Home/Pricing hero and booking CTAs share the approved raised emerald surface. */
+  .luxury-preview > section#home button,
   .luxury-preview:has(> main > section#home) > main > section#home button,
   .luxury-preview:has(> main > section#home) > main > section#booking button[type="submit"] {
     color: #f5f1e8 !important;
@@ -521,7 +550,8 @@
       0 5px 7px rgba(0, 0, 0, 0.22);
   }
 
-  /* Hero only: pulse the surface without scaling the label or changing typography. */
+  /* Both hero CTAs pulse only their surface, leaving the label and typography fixed. */
+  .luxury-preview > section#home button,
   .luxury-preview:has(> main > section#home) > main > section#home button {
     position: relative;
     isolation: isolate;
@@ -532,6 +562,7 @@
     box-shadow: none;
   }
 
+  .luxury-preview > section#home button::before,
   .luxury-preview:has(> main > section#home) > main > section#home button::before {
     content: "";
     position: absolute;
