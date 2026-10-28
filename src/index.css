@@ -224,25 +224,25 @@
     color: #ffffff !important;
   }
 
-  /* Pricing vehicle pills: Home's colours and shape, Pricing's original dimensions and state. */
-  .luxury-preview:has(> section#home) > section.flex-1 > div > div > div.flex.gap-2 > button {
-    border-radius: 9999px;
-    background-color: hsl(var(--card));
-    color: hsl(var(--muted-foreground));
-    border-color: hsl(var(--border));
-    box-shadow: none;
+  /* Pricing only: move all content below the hero down by another 48px on desktop. */
+  .luxury-preview:has(> section#home) > section.flex-1 {
+    padding-top: 60px;
   }
 
-  .luxury-preview:has(> section#home) > section.flex-1 > div > div > div.flex.gap-2 > button:hover {
-    background-color: hsl(var(--card) / 0.8);
-    color: hsl(var(--foreground));
+  /* Pricing section headings: white Price List and Route, unchanged text and typography. */
+  .luxury-preview:has(> section#home) > section.flex-1 > div > h2 {
+    color: #ffffff !important;
   }
 
-  .luxury-preview:has(> section#home) > section.flex-1 > div > div > div.flex.gap-2 > button.scale-95,
-  .luxury-preview:has(> section#home) > section.flex-1 > div > div > div.flex.gap-2 > button.scale-95:hover {
-    background-color: hsl(var(--primary));
-    color: #bfa15b;
-    box-shadow: var(--shadow-soft);
+  /* Lift only the Price List title; keep all following content in place. */
+  .luxury-preview:has(> section#home) > section.flex-1 > div > h2:first-child {
+    position: relative;
+    top: -16px;
+  }
+
+  /* Match Home's white-backed hover colour without letting Pricing's green show through. */
+  .luxury-preview [data-pricing-vehicle-toggle="desktop"] > button:not(.bg-primary):hover {
+    background-color: #fdfcf9;
   }
 
   .luxury-preview > main {
@@ -330,8 +330,9 @@
     border-color: #c9a55b !important;
   }
 
-  /* Shared metallic finish; Home and Pricing opt into the same desktop header. */
+  /* Shared metallic finish for desktop headers, Pricing body and the existing green sections/footer. */
   .luxury-preview > header[data-home-desktop="true"],
+  .luxury-preview:has(> section#home) > section.flex-1,
   .luxury-preview > main > section.bg-secondary,
   .luxury-preview > footer#contact {
     position: relative;
@@ -349,6 +350,7 @@
   }
 
   .luxury-preview > header[data-home-desktop="true"]::before,
+  .luxury-preview:has(> section#home) > section.flex-1::before,
   .luxury-preview > main > section.bg-secondary::before,
   .luxury-preview > footer#contact::before {
     content: "";
@@ -364,6 +366,7 @@
   }
 
   .luxury-preview > header[data-home-desktop="true"]::after,
+  .luxury-preview:has(> section#home) > section.flex-1::after,
   .luxury-preview > main > section.bg-secondary::after,
   .luxury-preview > footer#contact::after {
     content: "";
@@ -377,6 +380,7 @@
 
   /* Continuous silver reflection across the landing header, body and footer. */
   .luxury-preview > header[data-home-desktop="true"]::before,
+  .luxury-preview:has(> section#home) > section.flex-1::before,
   .luxury-preview > main > section.bg-secondary::before,
   .luxury-preview > footer#contact::before {
     background:

@@ -1,10 +1,10 @@
-import { useState, useCallback, useEffect, Component, ReactNode } from "react";
+import { useState, useCallback, useEffect, startTransition, memo, Component, ReactNode } from "react";
 import Header from "@/components/Header";
 import PublicNavigation from "@/components/PublicNavigation";
 import Footer from "@/components/Footer";
 import StaticPricingAccordion from "@/components/pricing/StaticPricingAccordion";
 
-import { allTables, currencies, PriceRow, VehicleData } from "@/data/pricingDataComplete";
+import { allTables, currencies, PriceRow } from "@/data/pricingDataComplete";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -170,8 +170,41 @@ const renderBusTable = (data: PriceRow[], tableId: string, t: (key: string, fb: 
   </div>
 );
 
+const PricingTables = memo(({ vehicle, t, formatPrice }: {
+  vehicle: VehicleType;
+  t: (key: string, fallback: string) => string;
+  formatPrice: (price: number | string) => string;
+}) => (
+  <div className="space-y-6">
+    {allTables.map((table) => {
+      const data = table.data[vehicle];
+      return (
+        <div key={table.id}>
+          <div className="xl:hidden">
+            <StaticPricingAccordion
+              data={data}
+              title={table.title}
+              vehicleType={vehicle}
+              formatPrice={formatPrice}
+              icon={routeIcons[table.id]}
+            />
+          </div>
+          <div className="hidden xl:block">
+            {vehicle === "car"
+              ? renderCarTable(data, table.id, t, formatPrice)
+              : vehicle === "van"
+                ? renderVanTable(data, table.id, t, formatPrice)
+                : renderBusTable(data, table.id, t, formatPrice)}
+          </div>
+        </div>
+      );
+    })}
+  </div>
+));
+
 const PricingPage = () => {
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleType>("car");
+  const [tableVehicle, setTableVehicle] = useState<VehicleType>("car");
   const { t } = useLevel2Language();
   const { selectedCurrency, setSelectedCurrency, convertPrice, loading } = useCurrencyConverter();
 
@@ -190,11 +223,9 @@ const PricingPage = () => {
     console.log(`[Currency] Table re-render triggered — currency: ${selectedCurrency}, vehicle: ${selectedVehicle}`);
   }, [selectedCurrency, selectedVehicle]);
 
-  const renderTable = (tableData: VehicleData, tableId: string) => {
-    const data = tableData[selectedVehicle];
-    if (selectedVehicle === "car") return renderCarTable(data, tableId, t, formatPrice);
-    if (selectedVehicle === "van") return renderVanTable(data, tableId, t, formatPrice);
-    return renderBusTable(data, tableId, t, formatPrice);
+  const selectDesktopVehicle = (vehicle: VehicleType) => {
+    setSelectedVehicle(vehicle);
+    startTransition(() => setTableVehicle(vehicle));
   };
 
   return (
@@ -242,12 +273,15 @@ const PricingPage = () => {
 
           {/* Filters */}
           <div className="flex flex-col sm:flex-row sm:justify-between gap-3 sm:gap-0 mb-6 sm:mb-[50px]">
-            {/* Vehicle Selector */}
-            <div className="flex gap-2">
+            {/* Original mobile/tablet vehicle selector. */}
+            <div className="flex gap-2 xl:hidden">
               {(["car", "van", "bus"] as VehicleType[]).map((vehicle) => (
                 <button
                   key={vehicle}
-                  onClick={() => setSelectedVehicle(vehicle)}
+                  onClick={() => {
+                    setSelectedVehicle(vehicle);
+                    setTableVehicle(vehicle);
+                  }}
                   className={cn(
                     "px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded transition-transform",
                     selectedVehicle === vehicle
@@ -256,6 +290,24 @@ const PricingPage = () => {
                   )}
                 >
                   {vehicle === "car" ? t('pricing.car', 'Car') : vehicle === "van" ? t('pricing.van', 'Van') : t('pricing.bus', 'Bus')}
+                </button>
+              ))}
+            </div>
+
+            {/* Home's vehicle toggle, retaining Pricing's larger size and existing typography. */}
+            <div className="hidden xl:flex gap-2" data-pricing-vehicle-toggle="desktop">
+              {(["car", "van", "bus"] as VehicleType[]).map((v) => (
+                <button
+                  key={v}
+                  onClick={() => selectDesktopVehicle(v)}
+                  className={cn(
+                    "px-4 py-2 rounded-full text-base transition-all border-transparent",
+                    selectedVehicle === v
+                      ? "bg-primary text-primary-foreground shadow-soft"
+                      : "bg-card text-muted-foreground hover:bg-card/80 hover:text-foreground border"
+                  )}
+                >
+                  {v === "car" ? t('pricing.car', 'Car') : v === "van" ? t('pricing.van', 'Van') : t('pricing.bus', 'Bus')}
                 </button>
               ))}
             </div>
@@ -287,26 +339,7 @@ const PricingPage = () => {
 
           {/* All Tables */}
           <PricingErrorBoundary>
-            <div className="space-y-6">
-              {allTables.map((table) => (
-                <div key={table.id}>
-                  {/* Mobile & Tablet Accordion Layout */}
-                  <div className="xl:hidden">
-                    <StaticPricingAccordion
-                      data={table.data[selectedVehicle]}
-                      title={table.title}
-                      vehicleType={selectedVehicle}
-                      formatPrice={formatPrice}
-                      icon={routeIcons[table.id]}
-                    />
-                  </div>
-                  {/* Desktop Table */}
-                  <div className="hidden xl:block">
-                    {renderTable(table.data, table.id)}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <PricingTables vehicle={tableVehicle} t={t} formatPrice={formatPrice} />
           </PricingErrorBoundary>
         </div>
       </section>
