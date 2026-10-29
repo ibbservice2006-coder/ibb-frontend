@@ -24,11 +24,10 @@ const About = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          {aboutPoints.map((point, index) => (
+          {aboutPoints.map((point) => (
             <div
-              key={index}
-              className="text-center p-6 rounded-lg bg-card shadow-soft hover:shadow-medium transition-shadow animate-fade-in-up opacity-0"
-              style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'forwards' }}
+              key={point.title}
+              className="text-center p-6 rounded-lg bg-card shadow-soft hover:shadow-medium transition-shadow"
             >
               <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
                 <point.icon className="w-7 h-7 text-primary" />

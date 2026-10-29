@@ -112,7 +112,8 @@ export async function bootstrap(): Promise<void> {
 
 export function switchLang(lang: Language): void {
   if (!state.allTranslations) return; // Not yet loaded
-  
+  if (state.ready && state.language === lang) return;
+
   state = {
     ...state,
     language: lang,

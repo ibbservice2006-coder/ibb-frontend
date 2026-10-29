@@ -35,11 +35,10 @@ const Services = () => {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {services.map((service, index) => (
-            <div
-              key={index}
-              className="group bg-card rounded-lg shadow-soft hover:shadow-medium transition-all duration-300 overflow-hidden animate-fade-in-up opacity-0"
-              style={{ animationDelay: `${index * 150}ms`, animationFillMode: 'forwards' }}
+              {services.map((service) => (
+                <div
+              key={service.title}
+              className="group bg-card rounded-lg shadow-soft hover:shadow-medium transition-all duration-300 overflow-hidden"
             >
               <div className="relative h-48 overflow-hidden">
                 <img

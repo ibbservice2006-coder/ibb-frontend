@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import LoadingFallback from "@/components/LoadingFallback";
 
@@ -41,6 +41,12 @@ const isPrivatePath = (pathname: string): boolean => {
 // ============================================
 const AppRouter = () => {
   const location = useLocation();
+
+  useEffect(() => {
+    if (!location.hash) {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname, location.hash]);
 
   // Only lazy-load PrivateApp for known private routes
   // Everything else (public + unknown) goes to PublicApp which has its own catch-all 404

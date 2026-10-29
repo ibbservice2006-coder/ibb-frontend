@@ -25,7 +25,7 @@ const PricingHero = () => {
 
       {/* Text - positioned at top */}
       <div className="absolute z-10 top-[12%] left-0 right-0 text-center">
-        <h1 className="inline-block font-heading text-xl sm:text-2xl md:text-4xl lg:text-[49px] font-thin text-white animate-fade-in-up leading-tight bg-[#173ca7]/80 px-6 py-5">
+        <h1 className="inline-block font-heading text-xl sm:text-2xl md:text-4xl lg:text-[49px] font-thin text-white leading-tight bg-[#173ca7]/80 px-6 py-5">
           {t.hero.title}
         </h1>
         <p className="sr-only">
@@ -37,7 +37,7 @@ const PricingHero = () => {
         <Button
           variant="cta"
           size="lg"
-          className="animate-blink h-14 px-[1.825rem] border-0"
+          className="h-14 px-[1.825rem] border-0"
           onClick={handleBookNowClick}
         >
           {t.hero.bookNow}

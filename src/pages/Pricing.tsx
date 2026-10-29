@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, startTransition, memo, Component, ReactNode } from "react";
+import { useState, useCallback, startTransition, memo, Component, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import PublicNavigation from "@/components/PublicNavigation";
@@ -207,7 +207,7 @@ const PricingPage = () => {
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleType>("car");
   const [tableVehicle, setTableVehicle] = useState<VehicleType>("car");
   const { t, language } = useLevel2Language();
-  const { selectedCurrency, setSelectedCurrency, convertPrice, loading } = useCurrencyConverter();
+  const { selectedCurrency, setSelectedCurrency, convertPrice } = useCurrencyConverter();
 
   // Dynamic price formatter — uses currency engine (L3)
   const currencyInfo = currencies.find(c => c.code === selectedCurrency) || currencies[0];
@@ -218,11 +218,6 @@ const PricingPage = () => {
     const converted = convertPrice(price);
     return `${currencyInfo.symbol}${converted.toLocaleString()}`;
   }, [selectedCurrency, convertPrice, currencyInfo]);
-
-  // Debug: log re-renders when currency changes
-  useEffect(() => {
-    console.log(`[Currency] Table re-render triggered — currency: ${selectedCurrency}, vehicle: ${selectedVehicle}`);
-  }, [selectedCurrency, selectedVehicle]);
 
   const selectDesktopVehicle = (vehicle: VehicleType) => {
     setSelectedVehicle(vehicle);
@@ -249,7 +244,7 @@ const PricingPage = () => {
           style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.32) 0%, rgba(0,0,0,0.25) 35%, rgba(0,0,0,0.10) 65%, rgba(0,0,0,0.02) 100%)' }}
         />
         <div className="absolute z-10 top-[12%] left-0 right-0 text-center">
-          <h1 className="font-heading text-xl sm:text-2xl md:text-4xl lg:text-[49px] font-light md:font-normal lg:font-medium animate-fade-in-up leading-tight text-[#bfa15b] [text-shadow:0_4px_20px_rgba(0,0,0,0.6),0_2px_8px_rgba(0,0,0,0.5)]">
+          <h1 className="font-heading text-xl sm:text-2xl md:text-4xl lg:text-[49px] font-light md:font-normal lg:font-medium leading-tight text-[#bfa15b] [text-shadow:0_4px_20px_rgba(0,0,0,0.6),0_2px_8px_rgba(0,0,0,0.5)]">
             {t('pricingPage.heroTitle', 'Transparent Fixed Pricing')}
           </h1>
           <p className="mt-6 text-lg sm:text-xl md:text-2xl lg:text-3xl font-light tracking-wider text-[#bfa15b]/[0.92] [text-shadow:0_4px_20px_rgba(0,0,0,0.6),0_2px_8px_rgba(0,0,0,0.5)]">
@@ -258,7 +253,7 @@ const PricingPage = () => {
         </div>
         <div className="absolute z-10 bottom-[26%] left-0 right-0 text-center">
           <Link to={`/${language}/shuttle#booking`}>
-            <Button variant="cta" size="lg" className="animate-blink h-14 px-[1.825rem] border-0">
+            <Button variant="cta" size="lg" className="h-14 px-[1.825rem] border-0">
               {t('hero.bookNow', 'Book Now')}
             </Button>
           </Link>
@@ -327,9 +322,6 @@ const PricingPage = () => {
                   </option>
                 ))}
               </select>
-              {loading && (
-                <span className="text-xs text-[#bfa15b]/50 animate-pulse">...</span>
-              )}
             </div>
           </div>
 

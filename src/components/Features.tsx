@@ -31,11 +31,10 @@ const Features = () => {
     <section className="bg-secondary pt-6 md:pt-8 pb-12 md:pb-16">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {features.map((feature, index) => (
+          {features.map((feature) => (
             <div
-              key={index}
-              className="bg-secondary border border-primary-foreground/20 rounded-lg p-5 text-center group hover:border-primary-foreground/40 transition-colors animate-fade-in-up opacity-0"
-              style={{ animationDelay: `${index * 150}ms`, animationFillMode: 'forwards' }}
+              key={feature.title}
+              className="bg-secondary border border-primary-foreground/20 rounded-lg p-5 text-center group hover:border-primary-foreground/40 transition-colors"
             >
               <h4 className="font-heading text-lg md:text-xl font-bold text-secondary-foreground mb-2">
                 {feature.title}

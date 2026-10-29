@@ -60,24 +60,22 @@ const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
   const accountHref = navigationContext ? navigationContext.signedIn ? navigationContext.accountHref : navigationContext.loginHref : "/auth";
   const accountLabel = navigationContext?.signedIn ? language === "th" ? "บัญชี IBB ของฉัน" : "My IBB account" : `${t('nav.login', 'Login')} / ${t('nav.signup', 'Sign Up')}`;
 
-  const handleTopLevelNavigation = (href: string) => {
-    if (href === "/landing" || href === "/pricing") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  };
-
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLang = e.target.value as Language;
-    setLanguage(newLang);
-    navigationContext?.onLanguageChange?.(newLang);
 
     // If on /:lang/shuttle, update the URL lang segment too
     const langShuttleMatch = location.pathname.match(
       /^\/(en|th|zh|ja|ko|ru|ar|de|fr|es|id|hi|vi)\/(shuttle)$/
     );
     if (langShuttleMatch && VALID_LANGS.includes(newLang)) {
-      navigate(`/${newLang}/${langShuttleMatch[2]}`, { replace: true });
+      setLanguage(newLang);
+      navigationContext?.onLanguageChange?.(newLang);
+      navigate(`/${newLang}/${langShuttleMatch[2]}${location.hash}`, { replace: true });
+      return;
     }
+
+    setLanguage(newLang);
+    navigationContext?.onLanguageChange?.(newLang);
   };
 
   const LanguageSelector = ({ className = "" }: { className?: string }) => (
@@ -111,7 +109,6 @@ const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
                 {link.isRoute ? (
                   <Link
                     to={link.href}
-                    onClick={() => handleTopLevelNavigation(link.href)}
                     className="text-secondary-foreground hover:text-secondary-foreground/80 text-sm lg:text-[16.5px] transition-colors hover:underline underline-offset-4"
                   >
                     {link.name}
@@ -168,7 +165,6 @@ const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
                     <Link
                       to={link.href}
                       onClick={() => {
-                        handleTopLevelNavigation(link.href);
                         setIsOpen(false);
                       }}
                       className="block py-2 text-secondary-foreground hover:text-secondary-foreground/80 transition-colors"
