@@ -60,6 +60,19 @@ const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
   const accountHref = navigationContext ? navigationContext.signedIn ? navigationContext.accountHref : navigationContext.loginHref : "/auth";
   const accountLabel = navigationContext?.signedIn ? language === "th" ? "บัญชี IBB ของฉัน" : "My IBB account" : `${t('nav.login', 'Login')} / ${t('nav.signup', 'Sign Up')}`;
 
+  const handleNavigationClick = (href: string) => {
+    if (href === "/landing" || href === "/pricing" || href === navigationContext?.shuttleHref) {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
+  };
+
+  const handleDesktopSectionClick = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href === "#services" && location.pathname === "/pricing") {
+      event.preventDefault();
+      navigate("/landing#services");
+    }
+  };
+
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLang = e.target.value as Language;
 
@@ -109,6 +122,7 @@ const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
                 {link.isRoute ? (
                   <Link
                     to={link.href}
+                    onClick={() => handleNavigationClick(link.href)}
                     className="text-secondary-foreground hover:text-secondary-foreground/80 text-sm lg:text-[16.5px] transition-colors hover:underline underline-offset-4"
                   >
                     {link.name}
@@ -116,6 +130,7 @@ const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
                 ) : (
                   <a
                     href={link.href}
+                    onClick={(event) => handleDesktopSectionClick(event, link.href)}
                     className="text-secondary-foreground hover:text-secondary-foreground/80 text-sm lg:text-[16.5px] transition-colors hover:underline underline-offset-4"
                   >
                     {link.name}
