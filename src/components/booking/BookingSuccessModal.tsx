@@ -4,6 +4,9 @@ import { CheckCircle2, Copy, CreditCard, Building2, Globe, Bitcoin, Wallet, Bank
 import { useState } from "react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import wechatPayLogo from "@/assets/payment-brands/wechat-pay.png";
+import alipayLogo from "@/assets/payment-brands/alipay.png";
+import PaymentQrCard from "@/components/payments/PaymentQrCard";
 
 type VehicleType = "car" | "van" | "bus";
 
@@ -24,6 +27,8 @@ const paymentOptions = [
   { icon: CreditCard, name: "Credit Card", id: "card" },
   { icon: Bitcoin, name: "Crypto", id: "crypto" },
   { icon: Wallet, name: "Other", id: "other" },
+  { icon: Wallet, name: "WeChat Pay", id: "wechat", logo: wechatPayLogo },
+  { icon: Wallet, name: "Alipay", id: "alipay", logo: alipayLogo },
 ];
 
 const BookingSuccessModal = ({
@@ -37,6 +42,8 @@ const BookingSuccessModal = ({
 }: BookingSuccessModalProps) => {
   const [copied, setCopied] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
+  const selectedQrMethod = selectedPayment === "wechat" || selectedPayment === "alipay" ? selectedPayment : null;
+  const isPendingProvider = selectedQrMethod !== null;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(bookingNumber);
@@ -47,7 +54,7 @@ const BookingSuccessModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto">
         <DialogHeader className="text-center">
           <div className="mx-auto mb-4">
             <CheckCircle2 className="h-16 w-16 text-green-500" />
@@ -103,6 +110,7 @@ const BookingSuccessModal = ({
                 <button
                   key={option.id}
                   type="button"
+                  aria-pressed={selectedPayment === option.id}
                   onClick={() => setSelectedPayment(option.id)}
                   className={`flex flex-col items-center p-3 border-2 rounded-lg transition-all cursor-pointer ${
                     selectedPayment === option.id
@@ -110,9 +118,9 @@ const BookingSuccessModal = ({
                       : "border-border bg-card hover:border-primary/40 hover:bg-muted"
                   } ${option.id === "cash" && !selectedPayment ? "border-amber-500/50 bg-amber-500/5" : ""}`}
                 >
-                  <option.icon className={`h-5 w-5 mb-1 ${
+                  {option.logo ? <img src={option.logo} alt="" className="h-7 w-full max-w-[96px] object-contain mb-1" /> : <option.icon className={`h-5 w-5 mb-1 ${
                     selectedPayment === option.id ? "text-primary" : option.id === "cash" ? "text-amber-600" : "text-muted-foreground"
-                  }`} />
+                  }`} />}
                   <span className={`text-[10px] text-center leading-tight ${
                     selectedPayment === option.id ? "text-primary font-medium" : "text-muted-foreground"
                   }`}>
@@ -123,6 +131,15 @@ const BookingSuccessModal = ({
             </div>
           </div>
 
+          {selectedQrMethod && (
+            <div>
+              <PaymentQrCard method={selectedQrMethod} />
+              <p className="text-sm text-muted-foreground text-center">
+                Confirm the CNY transfer amount with IBB before paying.
+              </p>
+            </div>
+          )}
+
           {/* Email Notice */}
           <p className="text-sm text-muted-foreground text-center">
             Booking details sent to: <span className="font-medium">{guestEmail}</span>
@@ -130,7 +147,10 @@ const BookingSuccessModal = ({
 
           {/* Action Buttons */}
           <div className="flex flex-col gap-2 pt-2">
-            <Button 
+            {isPendingProvider ? <Button className="w-full" disabled>
+              <CreditCard className="h-4 w-4 mr-2" />
+              Proceed to Payment
+            </Button> : <Button
               asChild 
               className="w-full" 
               disabled={!selectedPayment}
@@ -139,7 +159,7 @@ const BookingSuccessModal = ({
                 <CreditCard className="h-4 w-4 mr-2" />
                 Proceed to Payment
               </Link>
-            </Button>
+            </Button>}
             <Button variant="outline" onClick={() => onOpenChange(false)} className="w-full">
               I'll Pay Later
             </Button>

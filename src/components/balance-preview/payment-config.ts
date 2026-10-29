@@ -1,3 +1,5 @@
+import { paymentQrMethods } from "@/components/payments/receiving-qr";
+
 export type CurrencyCode = 'THB' | 'CNY' | 'USD' | 'EUR' | 'GBP' | 'JPY';
 export type MethodId = 'thai_bank' | 'thai_qr' | 'wechat' | 'alipay' | 'grey';
 export type TransferStatus = 'pending' | 'approved' | 'needs_info' | 'rejected';
@@ -90,13 +92,13 @@ export const currencyOptions: CurrencyOption[] = [
         id: 'wechat',
         name: 'WeChat Pay',
         kind: 'qr',
-        details: placeholderQrDetails,
+        details: [{ labelEn: 'Recipient', labelTh: 'ผู้รับเงิน', value: paymentQrMethods.wechat.recipient }],
       },
       {
         id: 'alipay',
         name: 'Alipay QR',
         kind: 'qr',
-        details: placeholderQrDetails,
+        details: [{ labelEn: 'Recipient', labelTh: 'ผู้รับเงิน', value: paymentQrMethods.alipay.recipient }],
       },
     ],
   },
