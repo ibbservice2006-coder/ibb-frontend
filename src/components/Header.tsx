@@ -153,8 +153,8 @@ const Header = ({ icon, iconAlt = "Home", restoreOriginalOnSmallScreens = false,
       </div>
 
       {/* Mobile Layout */}
-      <div className="flex md:hidden items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-3">
+      <div data-header-phone className="flex md:hidden items-center justify-between px-4 py-3">
+        <div data-phone-brand className="flex items-center gap-3">
           <Link to="/" aria-label="Back to Portal">
             <picture>
               <source media="(min-width: 1280px)" srcSet={logo} />
@@ -165,7 +165,7 @@ const Header = ({ icon, iconAlt = "Home", restoreOriginalOnSmallScreens = false,
               />
             </picture>
           </Link>
-          <div className="text-primary-foreground space-y-1">
+          <div data-phone-title className="text-primary-foreground space-y-1">
             <h1 className="font-heading text-[1rem] sm:text-[1.18rem] font-bold">IBB Shuttle Service</h1>
             <p className="text-[10px] sm:text-xs">Convenient and Reliable Shuttle</p>
           </div>

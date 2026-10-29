@@ -49,7 +49,7 @@ const Footer = () => {
           </p>
         </div>
 
-        <div className="flex items-center justify-center gap-4 mb-8">
+        <div data-phone-social className="flex items-center justify-center gap-4 mb-8">
           {socialLinks.map((social) => (
             <a
               key={social.name}

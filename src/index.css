@@ -744,3 +744,41 @@
 [data-vehicle-type="bus"][data-state="open"] {
   background-color: hsl(32 95% 44%); /* amber-600 */
 }
+
+/* Phone Header: retain the existing assets and typography; reposition only below md. */
+@media (max-width: 767px) {
+  header > [data-header-phone] {
+    --phone-header-side: 60px;
+    display: grid;
+    grid-template-columns: var(--phone-header-side) minmax(0, 1fr) var(--phone-header-side);
+    column-gap: 8px;
+    padding: 40px 28px 16px;
+  }
+
+  header > [data-header-phone] > [data-phone-brand] {
+    display: contents;
+  }
+
+  header > [data-header-phone] > [data-phone-brand] > a {
+    justify-self: center;
+  }
+
+  header > [data-header-phone] [data-phone-title] {
+    min-width: 0;
+    text-align: center;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 767px) {
+  header > [data-header-phone] {
+    --phone-header-side: 75px;
+  }
+}
+
+/* Phone Footer: four icons per row without flex shrinking; desktop stays unchanged. */
+@media (max-width: 767px) {
+  footer [data-phone-social] {
+    display: grid;
+    grid-template-columns: repeat(4, 40px);
+  }
+}
