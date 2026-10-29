@@ -782,3 +782,40 @@
     grid-template-columns: repeat(4, 40px);
   }
 }
+
+/* Shuttle phone Header: requested title enlargement and upward offset only. */
+@media (max-width: 767px) {
+  header > [data-header-phone] [data-phone-title] {
+    position: relative;
+    top: -12px;
+  }
+}
+
+@media (min-width: 360px) and (max-width: 767px) {
+  header > [data-header-phone] [data-phone-title] > h1 {
+    font-size: clamp(18px, 5vw, 19px);
+  }
+
+  header > [data-header-phone] [data-phone-title] > p {
+    font-size: clamp(11px, 3.1vw, 12px);
+  }
+}
+
+@media (min-width: 640px) and (max-width: 767px) {
+  header > [data-header-phone] [data-phone-title] > h1 {
+    font-size: 21px;
+  }
+
+  header > [data-header-phone] [data-phone-title] > p {
+    font-size: 14px;
+  }
+}
+
+/* Phone Header: lift only the logo and clock, keeping the title and layout fixed. */
+@media (max-width: 767px) {
+  header > [data-header-phone] > [data-phone-brand] > a,
+  header > [data-header-phone] > [data-phone-brand] + div {
+    position: relative;
+    top: -6px;
+  }
+}
