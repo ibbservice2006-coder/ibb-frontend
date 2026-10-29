@@ -21,6 +21,7 @@ import NotFound from "@/pages/NotFound";
 // Lazy loaded — These require system providers (Level 4+)
 const GuestPaymentPage = lazy(() => import("@/pages/GuestPayment"));
 const VoucherRedemptionPage = lazy(() => import("@/pages/VoucherRedemption"));
+const MemberPreviewPage = lazy(() => import("@/pages/MemberPreview"));
 
 // Providers for lazy-loaded routes only
 import { HelmetProvider } from "react-helmet-async";
@@ -92,6 +93,13 @@ const PublicApp = () => (
     {/* Tracking page — Level 1: zero-dependency */}
     <Route path="/tracking" element={<TrackingPage />} />
     <Route path="/tracking/:bookingNumber" element={<TrackingPage />} />
+
+    {/* UI-only member workspace — isolated from authentication and live data. */}
+    <Route path="/member-preview/*" element={
+      <Suspense fallback={<LoadingFallback />}>
+        <MemberPreviewPage />
+      </Suspense>
+    } />
 
     {/* Guest Payment & Voucher — Level 4+: require providers */}
     <Route path="/guest-payment" element={

@@ -241,6 +241,12 @@
     top: -16px;
   }
 
+  /* Pricing Route: slightly lower, with another half-line of space below. */
+  .luxury-preview:has(> section#home) > section.flex-1 > div > h2:nth-of-type(2) {
+    margin-top: -9px;
+    margin-bottom: calc(1rem + 0.5lh);
+  }
+
   /* Match Home's white-backed hover colour without letting Pricing's green show through. */
   .luxury-preview [data-pricing-vehicle-toggle="desktop"] > button:not(.bg-primary):hover {
     background-color: #fdfcf9;
