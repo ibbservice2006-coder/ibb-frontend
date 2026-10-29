@@ -94,7 +94,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   };
 
   const fetchResults = useCallback(async (searchQuery: string) => {
-    if (searchQuery.length < 2) {
+    if (searchQuery.length < 1) {
       setResults([]);
       setRequestError(false);
       return;
@@ -135,7 +135,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (query.length >= 2) fetchResults(query);
+      if (query.length >= 1) fetchResults(query);
       else setResults([]);
     }, 300);
     return () => clearTimeout(timer);
@@ -160,7 +160,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    const items = query.length < 2 ? recentSearches : results;
+    const items = query.length < 1 ? recentSearches : results;
     if (!isOpen) {
       if (e.key === 'Enter') {
         handleManualInput(); // Allow manual input on Enter if dropdown is not open
@@ -218,7 +218,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
     }
   };
 
-  const displayItems = query.length < 2 ? recentSearches : results;
+  const displayItems = query.length < 1 ? recentSearches : results;
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
@@ -279,10 +279,10 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
       </div>
 
       {/* Dropdown Results */}
-      {isOpen && (displayItems.length > 0 || (query.length >= 2 && !isLoading)) && (
+      {isOpen && (displayItems.length > 0 || (query.length >= 1 && !isLoading)) && (
         <div className="absolute z-[100] w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-2xl max-h-[50vh] overflow-y-auto overflow-x-hidden animate-in fade-in slide-in-from-top-2 duration-200">
           
-          {query.length < 2 && recentSearches.length > 0 && (
+          {query.length < 1 && recentSearches.length > 0 && (
             <div className="px-5 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-[0.1em] bg-gray-50/50 border-b border-gray-50">
               Recent {context} locations
             </div>
@@ -298,7 +298,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
               }`}
             >
               <div className={`p-2.5 rounded-xl transition-colors ${highlightedIndex === index ? 'bg-white shadow-sm' : 'bg-gray-50'}`}>
-                {getTypeIcon(loc.type, query.length < 2)}
+                {getTypeIcon(loc.type, query.length < 1)}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="font-bold text-gray-900 truncate text-[15px]">{loc.display_name}</div>
@@ -311,7 +311,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
             </button>
           ))}
 
-          {query.length >= 2 && results.length === 0 && !isLoading && (
+          {query.length >= 1 && results.length === 0 && !isLoading && (
             <div className="p-4 text-center">
               <div className="inline-flex p-2.5 bg-gray-50 rounded-full mb-2">
                 <Search className="w-5 h-5 text-gray-200" />
