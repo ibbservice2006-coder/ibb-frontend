@@ -64,7 +64,7 @@ const PortalLanguageSwitcher = ({ onLangChange }: PortalLanguageSwitcherProps) =
   const currentLabel = LANGUAGES.find((l) => l.code === current)?.label ?? "English";
 
   return (
-    <div ref={ref} className="fixed z-50" style={{ top: "48px", right: "max(calc(2rem + 26px), calc((100vw - 1400px) / 2 + 26px))" }}>
+    <div ref={ref} className="fixed z-50 top-2 right-3 md:top-12 md:right-[max(calc(2rem_+_26px),calc((100vw_-_1400px)_/_2_+_26px))]">
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center justify-between gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium backdrop-blur-sm transition-all hover:bg-white/10 w-[120px]"

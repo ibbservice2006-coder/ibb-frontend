@@ -161,7 +161,7 @@ const Header = ({ icon, iconAlt = "Home", restoreOriginalOnSmallScreens = false,
               <img
                 src={restoreOriginalOnSmallScreens ? originalLogo : logo}
                 alt="IBB Service Logo"
-                className="h-[60px] sm:h-[74px] w-auto object-contain hover:opacity-80 transition-opacity cursor-pointer"
+                className="h-[70px] sm:h-[74px] w-auto max-w-none object-contain hover:opacity-80 transition-opacity cursor-pointer"
               />
             </picture>
           </Link>
