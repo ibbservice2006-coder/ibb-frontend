@@ -197,3 +197,26 @@
 @media (max-width: 760px) {
  .member-preview .mp-booking-row { grid-template-columns: minmax(0, 1fr); gap: 20px; }
 }
+
+.member-preview .mp-shuttle-home { display: flex; gap: 25px; align-items: stretch; }
+.member-preview .mp-shuttle-home > .mp-panel { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.member-preview .mp-shuttle-home .mp-actions { margin-top: auto; padding-top: 24px; }
+.member-preview .mp-shuttle-home .mp-service-emblem { margin-bottom: 24px; }
+.member-preview .mp-central-shortcuts { display: flex; flex-wrap: wrap; gap: 30px; }
+.member-preview .mp-login-main { max-width: 510px; margin: 0 auto; padding: 42px 24px 0; }
+.member-preview .mp-login-card { border: 1px solid var(--mp-line); border-radius: 10px; padding: 34px; margin-top: 24px; background: #fff; box-shadow: 0 3px 8px #1c403208; }
+.member-preview .mp-login-card .mp-page-heading { margin-bottom: 28px; }
+.member-preview .mp-login-form { display: flex; flex-direction: column; gap: 20px; }
+.member-preview .mp-login-form > .mp-button { margin-top: 6px; width: 100%; }
+.member-preview .mp-password-input { display: flex; position: relative; }
+.member-preview .mp-password-input input { padding-right: 47px; }
+.member-preview .mp-password-input button { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); }
+.member-preview .mp-login-switch { margin-top: 25px; }
+.member-preview .mp-login-error { padding: 12px; border-radius: 6px; }
+.member-preview .mp-sidebar-member div { min-width: 0; }
+.member-preview .mp-sidebar-member div > span { overflow-wrap: anywhere; }
+@media (max-width: 760px) {
+  .member-preview .mp-shuttle-home { flex-direction: column; gap: 0; }
+  .member-preview .mp-login-main { padding: 28px 20px 0; }
+  .member-preview .mp-login-card { padding: 25px; }
+}

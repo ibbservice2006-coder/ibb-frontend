@@ -1,0 +1,87 @@
+.ibb-member-page { display: flex; flex-direction: column; min-height: 100vh; background: #fff; }
+.ibb-member-page > .member-preview { min-height: 0; flex: 1; }
+.ibb-member-page .mp-branded-signin { padding-bottom: 54px; }
+.member-preview .mp-ibb-memberbar { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-top: 17px; padding-bottom: 17px; border-bottom: 1px solid #e6ece8; }
+.member-preview .mp-ibb-member-identity, .member-preview .mp-ibb-member-actions { display: flex; align-items: center; gap: 20px; }
+.mp-branded-member .mp-workspace { min-height: 560px; }
+.mp-branded-member .mp-sidebar { top: 0; height: auto; min-height: 560px; position: relative; }
+.mp-branded-member .mp-main { padding-bottom: 52px; }
+@media (max-width: 760px) {
+  .member-preview .mp-ibb-memberbar { flex-wrap: wrap; gap: 15px; }
+  .member-preview .mp-ibb-member-actions { flex-wrap: wrap; gap: 18px; }
+  .mp-branded-member .mp-sidebar { position: fixed; top: 0; height: 100vh; min-height: 0; }
+}
+
+@media (min-width: 1280px) {
+
+  .member-preview.mp-full-balance .bp-preview { color: hsl(var(--foreground)); }
+  .member-preview.mp-full-balance .bp-summary { display: flex; align-items: center; gap: 32px; background: #fff; padding: 24px 28px; border: 1px solid #dce5e0; border-radius: 12px; margin-bottom: 26px; box-shadow: 0 3px 8px rgba(14, 59, 48, .035); }
+  .member-preview.mp-full-balance .bp-currency { flex: 0 0 240px; display: flex; flex-direction: column; gap: 9px; }
+  .member-preview.mp-full-balance .bp-currency select { width: 100%; height: 42px; border: 1px solid #cbd9d2; border-radius: 7px; background: #fff; color: hsl(var(--foreground)); padding: 0 12px; cursor: pointer; }
+  .member-preview.mp-full-balance .bp-currency select:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+  .member-preview.mp-full-balance .bp-balance { flex: 1; border-left: 1px solid #e6ece8; padding-left: 32px; display: flex; flex-direction: column; gap: 7px; }
+  .member-preview.mp-full-balance .bp-limit { flex: 0 1 360px; display: flex; flex-direction: column; gap: 12px; }
+  .member-preview.mp-full-balance .bp-workspace { display: flex; align-items: stretch; gap: 26px; }
+  .member-preview.mp-full-balance .bp-panel { min-width: 0; flex: 1; display: flex; flex-direction: column; background: #fff; border: 1px solid #dce5e0; border-radius: 12px; padding: 26px; box-shadow: 0 3px 8px rgba(14, 59, 48, .035); }
+  .member-preview.mp-full-balance .bp-panel-heading { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 24px; }
+  .member-preview.mp-full-balance .bp-panel-heading p { margin-top: 5px; }
+  .member-preview.mp-full-balance .bp-step { flex: 0 0 30px; height: 30px; display: flex; align-items: center; justify-content: center; color: #285344; background: #edf3ef; border: 1px solid #d9e6de; border-radius: 50%; }
+  .member-preview.mp-full-balance .bp-methods { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 22px; }
+  .member-preview.mp-full-balance .bp-method { display: flex; align-items: center; gap: 9px; flex: 1 1 170px; min-height: 44px; border: 1px solid #dce4de; border-radius: 8px; padding: 11px 12px; text-align: left; color: #52665c; background: #fff; transition: background-color .15s ease, border-color .15s ease; }
+  .member-preview.mp-full-balance .bp-method:hover { background: #f6f8f6; border-color: #9bb5a7; }
+  .member-preview.mp-full-balance .bp-method.is-selected { background: #edf4ef; border-color: #42765e; color: #214c3c; }
+  .member-preview.mp-full-balance .bp-method:focus-visible, .member-preview.mp-full-balance .bp-copy:focus-visible, .member-preview.mp-full-balance .bp-history-row:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 3px; }
+  .member-preview.mp-full-balance .bp-receiving { border: 1px solid #e3e9e5; border-radius: 10px; padding: 20px; background: #fafcfb; }
+  .member-preview.mp-full-balance .bp-account-details { display: flex; flex-direction: column; gap: 15px; }
+  .member-preview.mp-full-balance .bp-detail-line { display: flex; flex-direction: column; gap: 4px; }
+  .member-preview.mp-full-balance .bp-detail-line dd { overflow-wrap: anywhere; }
+  .member-preview.mp-full-balance .bp-copy { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 28px; height: 28px; border-radius: 5px; color: #526a5c; }
+  .member-preview.mp-full-balance .bp-copy:hover { background: #e7eee9; }
+  .member-preview.mp-full-balance .bp-qr { display: flex; flex-direction: column; align-items: center; gap: 10px; border: 1px dashed #c8d7cc; border-radius: 8px; padding: 22px 18px; margin-bottom: 20px; background: #fff; color: #627668; text-align: center; }
+  .member-preview.mp-full-balance .bp-qr svg { color: #789085; }
+  .member-preview.mp-full-balance .bp-qr button { margin-top: 3px; }
+  .member-preview.mp-full-balance .bp-more-details { margin-top: 18px; padding-top: 16px; border-top: 1px solid #e3e9e5; }
+  .member-preview.mp-full-balance .bp-more-details summary, .member-preview.mp-full-balance .bp-optional-fields summary { cursor: pointer; color: #365f4d; }
+  .member-preview.mp-full-balance .bp-review-note { display: flex; gap: 10px; align-items: flex-start; padding-top: 28px; margin-top: auto; color: #647369; line-height: 1.65; }
+  .member-preview.mp-full-balance .bp-proof-form { display: flex; flex-direction: column; gap: 19px; }
+  .member-preview.mp-full-balance .bp-form-context { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 7px; background: #f2f6f3; color: #385c49; }
+  .member-preview.mp-full-balance .bp-date-time { display: flex; gap: 14px; }
+  .member-preview.mp-full-balance .bp-date-time > div { flex: 1; min-width: 0; }
+  .member-preview.mp-full-balance .bp-proof-form input, .member-preview.mp-full-balance .bp-proof-form textarea { background: #fff; }
+  .member-preview.mp-full-balance .bp-upload { position: relative; display: flex; align-items: center; gap: 12px; min-height: 98px; border: 1px dashed #a8bfb0; border-radius: 8px; padding: 18px; background: #fafcfb; }
+  .member-preview.mp-full-balance .bp-upload:hover { border-color: #46725a; background: #f4f8f5; }
+  .member-preview.mp-full-balance .bp-upload > div { min-width: 0; flex: 1; }
+  .member-preview.mp-full-balance .bp-upload p { overflow-wrap: anywhere; }
+  .member-preview.mp-full-balance .bp-upload p + p { margin-top: 5px; }
+  .member-preview.mp-full-balance .bp-upload input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+  .member-preview.mp-full-balance .bp-upload:focus-within { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+  .member-preview.mp-full-balance .bp-upload.has-file { border-style: solid; border-color: #a8bfb0; padding-right: 43px; }
+  .member-preview.mp-full-balance .bp-remove-file { position: absolute; right: 10px; top: 10px; z-index: 1; padding: 5px; border-radius: 5px; background: #edf3ef; }
+  .member-preview.mp-full-balance .bp-payer-toggle { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+  .member-preview.mp-full-balance .bp-payer-toggle input { accent-color: #365f4d; width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; }
+  .member-preview.mp-full-balance .bp-optional-fields { padding-top: 2px; }
+  .member-preview.mp-full-balance .bp-error { padding: 12px 14px; border-radius: 7px; background: #fff2f0; color: #a33a30; border: 1px solid #efd5ce; }
+  .member-preview.mp-full-balance .bp-success { display: flex; align-items: flex-start; gap: 9px; padding: 12px 14px; border-radius: 7px; background: #edf7ef; color: #2e6849; border: 1px solid #cde4d4; }
+  .member-preview.mp-full-balance .bp-editing { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fff7e6; border: 1px solid #ead8b2; border-radius: 7px; padding: 10px; color: #786039; }
+  .member-preview.mp-full-balance .bp-history { margin-top: 38px; }
+  .member-preview.mp-full-balance .bp-history-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 18px; }
+  .member-preview.mp-full-balance .bp-history-heading p { margin-top: 6px; }
+  .member-preview.mp-full-balance .bp-history-list { background: #fff; border: 1px solid #dce5e0; border-radius: 11px; overflow: hidden; }
+  .member-preview.mp-full-balance .bp-history-row { width: 100%; display: flex; align-items: center; gap: 18px; padding: 19px 22px; text-align: left; background: #fff; }
+  .member-preview.mp-full-balance .bp-history-row + .bp-history-row { border-top: 1px solid #e8ece9; }
+  .member-preview.mp-full-balance .bp-history-row:hover { background: #f6f9f7; }
+  .member-preview.mp-full-balance .bp-notice-icon { display: flex; align-items: center; justify-content: center; flex: 0 0 36px; height: 36px; background: #eef4ef; border-radius: 8px; color: #48725b; }
+  .member-preview.mp-full-balance .bp-notice-description { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; overflow-wrap: anywhere; }
+  .member-preview.mp-full-balance .bp-notice-amount { flex: 0 0 160px; text-align: right; }
+  .member-preview.mp-full-balance .bp-status { display: inline-flex; align-items: center; justify-content: center; border-radius: 5px; padding: 5px 9px; white-space: nowrap; }
+  .member-preview.mp-full-balance .bp-status-pending { color: #876932; background: #fbf4e5; }
+  .member-preview.mp-full-balance .bp-status-approved { color: #376950; background: #eaf4ed; }
+  .member-preview.mp-full-balance .bp-status-needs_info { color: #506d88; background: #edf3f8; }
+  .member-preview.mp-full-balance .bp-status-rejected { color: #9b5147; background: #fbefed; }
+  .member-preview.mp-full-balance .bp-empty { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 40px 20px; }
+  .member-preview.mp-full-balance .bp-notice-fields { display: flex; flex-direction: column; gap: 12px; }
+  .member-preview.mp-full-balance .bp-notice-fields > div { display: flex; justify-content: space-between; gap: 16px; }
+  .member-preview.mp-full-balance .bp-notice-fields dd { text-align: right; overflow-wrap: anywhere; }
+  .member-preview.mp-full-balance .bp-detail-note { border: 1px solid #e0e8e1; border-radius: 8px; background: #f6f9f6; padding: 14px; line-height: 1.65; }
+  .member-preview.mp-full-balance .bp-proof-image { max-width: 100%; max-height: 400px; object-fit: contain; margin: 0 auto; border: 1px solid #e0e8e1; border-radius: 7px; }
+}

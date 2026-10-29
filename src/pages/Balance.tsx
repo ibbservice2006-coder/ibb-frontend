@@ -4,6 +4,7 @@ import Navigation from "@/components/Navigation";
 import PublicNavigation from "@/components/PublicNavigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import LoadingFallback from "@/components/LoadingFallback";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/data/translations";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,9 +12,9 @@ import { useWallet } from "@/hooks/useWallet";
 import { WalletBalanceCards } from "@/components/wallet/WalletBalanceCards";
 import { TransactionHistory } from "@/components/wallet/TransactionHistory";
 import { DepositForm } from "@/components/wallet/DepositForm";
-import { Button } from "@/components/ui/button";
-import { LogIn } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
+import { useMemberSession, memberLoginHref } from "@/components/member-preview/member-navigation";
+import { memberUrl } from "@/components/member-preview/ui";
 
 const desktopQuery = "(min-width: 1280px)";
 const subscribeToDesktop = (onChange: () => void) => {
@@ -24,13 +25,30 @@ const subscribeToDesktop = (onChange: () => void) => {
 const isDesktopScreen = () => window.matchMedia(desktopQuery).matches;
 const serverDesktopScreen = () => false;
 
-const Balance = () => {
-  const isDesktop = useSyncExternalStore(subscribeToDesktop, isDesktopScreen, serverDesktopScreen);
-  const { language } = useLanguage();
-  const t = translations[language];
-  const { user } = useAuth();
+const ExistingWalletContent = () => {
   const { balance, totalDeposits, totalSpent, transactions, profileId, isLoading, refetch } = useWallet();
   const [showDepositForm, setShowDepositForm] = useState(false);
+
+  return <>
+    <WalletBalanceCards balance={balance} totalDeposits={totalDeposits} totalSpent={totalSpent} isLoading={isLoading} onDeposit={() => setShowDepositForm(true)} />
+    <TransactionHistory transactions={transactions} isLoading={isLoading} />
+    <DepositForm open={showDepositForm} onOpenChange={setShowDepositForm} profileId={profileId} onSuccess={refetch} />
+  </>;
+};
+
+const Balance = () => {
+  const isDesktop = useSyncExternalStore(subscribeToDesktop, isDesktopScreen, serverDesktopScreen);
+  const [searchParams] = useSearchParams();
+  const uiSession = useMemberSession();
+  const { user, loading } = useAuth();
+  const { language } = useLanguage();
+  const t = translations[language];
+  const balanceDestination = memberUrl("shuttle/balance");
+  const showPaymentPreview = isDesktop && searchParams.get("preview") === "payment-ui-v1";
+
+  if (showPaymentPreview) return <Navigate to={uiSession ? balanceDestination : memberLoginHref(balanceDestination)} replace />;
+  if (loading) return <LoadingFallback />;
+  if (!user) return <Navigate to={uiSession ? balanceDestination : memberLoginHref(balanceDestination)} replace />;
 
   return (
     <>
@@ -46,7 +64,6 @@ const Balance = () => {
 
       <main className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-16">
-          {/* Page Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
               {t.nav.balancePayments}
@@ -55,54 +72,7 @@ const Balance = () => {
               Manage your account balance, view transaction history, and make payments.
             </p>
           </div>
-
-          {/* Not Logged In */}
-          {!user && !isLoading && (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-6">
-                <LogIn className="h-10 w-10 text-muted-foreground" />
-              </div>
-              <h2 className="text-2xl font-semibold mb-2">Sign in to view your wallet</h2>
-              <p className="text-muted-foreground mb-6 max-w-md">
-                Access your balance, transaction history, and make deposits by signing in to your account.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/auth">
-                  <Button size="lg">
-                    <LogIn className="mr-2 h-4 w-4" />
-                    Sign In
-                  </Button>
-                </Link>
-                <Link to="/guest-payment">
-                  <Button variant="outline" size="lg">
-                    Pay as Guest
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          )}
-
-          {/* Logged In - Show Wallet */}
-          {user && (
-            <>
-              <WalletBalanceCards
-                balance={balance}
-                totalDeposits={totalDeposits}
-                totalSpent={totalSpent}
-                isLoading={isLoading}
-                onDeposit={() => setShowDepositForm(true)}
-              />
-
-              <TransactionHistory transactions={transactions} isLoading={isLoading} />
-
-              <DepositForm
-                open={showDepositForm}
-                onOpenChange={setShowDepositForm}
-                profileId={profileId}
-                onSuccess={refetch}
-              />
-            </>
-          )}
+          <ExistingWalletContent />
         </div>
       </main>
 

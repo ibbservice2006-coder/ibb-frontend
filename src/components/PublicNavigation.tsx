@@ -4,6 +4,9 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLevel2Language } from "@/hooks/useLevel2Language";
 import type { Language } from "@/contexts/LanguageContext";
+import { useMemberSession, memberLoginHref } from "@/components/member-preview/member-navigation";
+import { writeMemberSession } from "@/components/member-preview/session";
+import { memberUrl } from "@/components/member-preview/ui";
 
 // ============================================
 // PublicNavigation - Level 1+2
@@ -13,24 +16,53 @@ import type { Language } from "@/contexts/LanguageContext";
 
 const VALID_LANGS: Language[] = ['en', 'th', 'zh', 'ja', 'ko', 'ru', 'ar', 'de', 'fr', 'es', 'id', 'hi', 'vi'];
 
-const PublicNavigation = () => {
+interface PublicNavigationProps {
+  memberContext?: {
+    signedIn: boolean;
+    loginHref: string;
+    accountHref: string;
+    balanceHref?: string;
+    shuttleHref?: string;
+    onLanguageChange?: (language: Language) => void;
+  };
+}
+
+const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { t, language, ready, setLanguage, allLanguages } = useLevel2Language();
   const navigate = useNavigate();
   const location = useLocation();
+  const uiSession = useMemberSession();
+  const isShuttlePublicPage = ["/landing", "/shuttle", "/pricing"].includes(location.pathname) || /^\/(en|th|zh|ja|ko|ru|ar|de|fr|es|id|hi|vi)\/shuttle$/.test(location.pathname);
+  const navigationContext = memberContext ?? (isShuttlePublicPage ? {
+    signedIn: !!uiSession,
+    loginHref: memberLoginHref(`${location.pathname}${location.search}${location.hash}`),
+    accountHref: memberUrl("profile"),
+    balanceHref: uiSession && uiSession.tier !== "General" ? memberUrl("shuttle/balance") : undefined,
+    onLanguageChange: (nextLanguage: Language) => {
+      if (uiSession) writeMemberSession({ ...uiSession, language: nextLanguage });
+    },
+  } : undefined);
 
   const navLinks = [
     { name: t('nav.home', 'Home'), href: "/landing", isRoute: true },
     { name: t('nav.services', 'Services'), href: "#services", isRoute: false },
     { name: t('nav.pricing', 'Pricing'), href: "/pricing", isRoute: true },
     { name: t('nav.booking', 'Book Now'), href: "#booking", isRoute: false },
-    { name: t('nav.balancePayments', 'Balance & Payments'), href: "/balance", isRoute: true },
+    ...(navigationContext?.signedIn && navigationContext.balanceHref ? [{ name: t('nav.balancePayments', 'Balance & Payments'), href: navigationContext.balanceHref, isRoute: true }] : []),
     { name: t('nav.contact', 'Contact'), href: "#contact", isRoute: false },
-  ];
+  ].map(link => memberContext ? {
+      ...link,
+      href: link.href === "/landing" ? memberContext.shuttleHref ?? link.href : link.href.startsWith("#") ? `${memberContext.shuttleHref ?? "/en/shuttle"}${link.href}` : link.href,
+      isRoute: true,
+    } : link);
+  const accountHref = navigationContext ? navigationContext.signedIn ? navigationContext.accountHref : navigationContext.loginHref : "/auth";
+  const accountLabel = navigationContext?.signedIn ? language === "th" ? "บัญชี IBB ของฉัน" : "My IBB account" : `${t('nav.login', 'Login')} / ${t('nav.signup', 'Sign Up')}`;
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLang = e.target.value as Language;
     setLanguage(newLang);
+    navigationContext?.onLanguageChange?.(newLang);
 
     // If on /:lang/shuttle, update the URL lang segment too
     const langShuttleMatch = location.pathname.match(
@@ -88,10 +120,10 @@ const PublicNavigation = () => {
             ))}
             <li>
               <Link
-                to="/auth"
+                to={accountHref}
                 className="text-secondary-foreground hover:text-secondary-foreground/80 text-sm lg:text-[16.5px] transition-colors hover:underline underline-offset-4"
               >
-                {t('nav.login', 'Login')} / {t('nav.signup', 'Sign Up')}
+                {accountLabel}
               </Link>
             </li>
           </ul>
@@ -145,11 +177,11 @@ const PublicNavigation = () => {
               ))}
               <li className="border-t border-secondary-foreground/20 pt-2 mt-2">
                 <Link
-                  to="/auth"
+                  to={accountHref}
                   onClick={() => setIsOpen(false)}
                   className="block py-2 text-secondary-foreground hover:text-secondary-foreground/80 transition-colors"
                 >
-                  {t('nav.login', 'Login')} / {t('nav.signup', 'Sign Up')}
+                  {accountLabel}
                 </Link>
               </li>
             </ul>

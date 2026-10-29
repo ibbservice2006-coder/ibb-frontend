@@ -1,28 +1,19 @@
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, type FormEvent } from "react";
+import { ALL_LANGUAGES } from "@/lib/level2-language";
 import {
-  ArrowUpRight,
-  Bus,
   Check,
   CircleAlert,
-  Globe2,
-  HeartPulse,
-  Mail,
-  MessageSquare,
   Monitor,
-  Plane,
   Smartphone,
   Trash2,
 } from "lucide-react";
-import { Link } from "react-router-dom";
 import {
   copyFor,
   EmptyState,
   LinkButton,
-  memberUrl,
   PageHeading,
   Panel,
   PreviewDialog,
-  PreviewNote,
   Status,
   tierDescription,
 } from "./ui";
@@ -35,24 +26,24 @@ import type {
 
 type Feedback = { tone: "success" | "error"; message: string };
 
-type DemoDevice = {
+type AccountDevice = {
   id: string;
   name: [string, string];
   description: [string, string];
   icon: "desktop" | "phone";
 };
 
-const DEMO_DEVICES: DemoDevice[] = [
+const ACCOUNT_DEVICES: AccountDevice[] = [
   {
-    id: "demo-desktop",
+    id: "desktop",
     name: ["Chrome on macOS", "Chrome บน macOS"],
-    description: ["Sample desktop session", "เซสชันเดสก์ท็อปตัวอย่าง"],
+    description: ["Desktop session", "เซสชันเดสก์ท็อป"],
     icon: "desktop",
   },
   {
-    id: "demo-phone",
+    id: "phone",
     name: ["Safari on iPhone", "Safari บน iPhone"],
-    description: ["Sample mobile session", "เซสชันมือถือ ตัวอย่าง"],
+    description: ["Mobile session", "เซสชันมือถือ"],
     icon: "phone",
   },
 ];
@@ -175,7 +166,7 @@ function ProfilePage({ props }: { props: MemberPageProps }) {
     if (!/^\S+@\S+\.\S+$/.test(nextProfile.email.trim())) {
       setFeedback({
         tone: "error",
-        message: c("Enter a valid email format for this demo.", "กรุณากรอกรูปแบบอีเมลที่ถูกต้องสำหรับตัวอย่างนี้"),
+        message: c("Enter a valid email address.", "กรุณากรอกอีเมลให้ถูกต้อง"),
       });
       return;
     }
@@ -190,29 +181,29 @@ function ProfilePage({ props }: { props: MemberPageProps }) {
     setDraft(savedProfile);
     setFeedback({
       tone: "success",
-      message: c("Profile changes were saved in this preview only.", "บันทึกการเปลี่ยนแปลงโปรไฟล์ในพรีวิวนี้เท่านั้นแล้ว"),
+      message: c("Changes saved", "บันทึกการเปลี่ยนแปลงแล้ว"),
     });
-    props.notify(c("Profile changes saved in this preview.", "บันทึกข้อมูลโปรไฟล์ในพรีวิวนี้แล้ว"));
+    props.notify(c("Changes saved", "บันทึกการเปลี่ยนแปลงแล้ว"));
   };
 
   const handleCancel = () => {
     setDraft(profileDraftFrom(props.profile));
     setFeedback({
       tone: "success",
-      message: c("The form was reset to the supplied demo profile.", "รีเซ็ตฟอร์มกลับเป็นข้อมูลโปรไฟล์ตัวอย่างที่ให้มาแล้ว"),
+      message: c("Changes canceled", "ยกเลิกการเปลี่ยนแปลงแล้ว"),
     });
   };
 
   return (
     <>
       <PageHeading
-        eyebrow={c("Central IBB account", "บัญชี IBB ส่วนกลาง")}
-        title={c("Profile", "โปรไฟล์")}
-        description={c("Keep the example contact details for your central IBB account in one place.", "จัดการข้อมูลติดต่อในบัญชี IBB ส่วนกลางของตัวอย่างนี้ไว้ในที่เดียว")}
+        eyebrow={c("MY IBB ACCOUNT", "บัญชี IBB ของฉัน")}
+        title={c("Personal information", "ข้อมูลส่วนตัว")}
+        description={c("Manage your contact information in one place.", "จัดการข้อมูลติดต่อของคุณได้ในที่เดียว")}
       />
       <Panel
-        title={c("Profile details", "รายละเอียดโปรไฟล์")}
-        description={c("These fields use the mock profile supplied to the preview.", "ช่องเหล่านี้ใช้ข้อมูลโปรไฟล์ตัวอย่างที่ส่งให้พรีวิว")}
+        title={c("Contact information", "ข้อมูลติดต่อ")}
+        description={c("Keep your contact information up to date.", "อัปเดตข้อมูลติดต่อของคุณให้เป็นปัจจุบัน")}
       >
         <form onSubmit={handleSubmit}>
           <div className="mp-form-grid">
@@ -258,12 +249,6 @@ function ProfilePage({ props }: { props: MemberPageProps }) {
           <FeedbackNote feedback={feedback} />
         </form>
       </Panel>
-      <PreviewNote>
-        {c(
-          "This is a local preview: saving updates the supplied mock profile in memory only.",
-          "นี่คือพรีวิวในเครื่อง การบันทึกจะอัปเดตข้อมูลโปรไฟล์ตัวอย่างในหน่วยความจำเท่านั้น",
-        )}
-      </PreviewNote>
     </>
   );
 }
@@ -273,7 +258,7 @@ function SecurityPage({ props }: { props: MemberPageProps }) {
   const [passwords, setPasswords] = useState({ current: "", next: "", confirm: "" });
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [revokedDeviceIds, setRevokedDeviceIds] = useState<string[]>([]);
-  const [deviceToRevoke, setDeviceToRevoke] = useState<DemoDevice | null>(null);
+  const [deviceToRevoke, setDeviceToRevoke] = useState<AccountDevice | null>(null);
   const [deviceFeedback, setDeviceFeedback] = useState<Feedback | null>(null);
 
   const submitPassword = (event: FormEvent<HTMLFormElement>) => {
@@ -281,14 +266,14 @@ function SecurityPage({ props }: { props: MemberPageProps }) {
     if (!passwords.current || !passwords.next || !passwords.confirm) {
       setFeedback({
         tone: "error",
-        message: c("Complete all three password fields for the simulation.", "กรุณากรอกรหัสผ่านทั้งสามช่องสำหรับการจำลอง"),
+        message: c("Complete all password fields.", "กรุณากรอกรหัสผ่านให้ครบทุกช่อง"),
       });
       return;
     }
     if (passwords.next.length < 8) {
       setFeedback({
         tone: "error",
-        message: c("Use at least 8 characters for the simulated new password.", "ใช้รหัสผ่านใหม่อย่างน้อย 8 ตัวอักษรสำหรับการจำลอง"),
+        message: c("Use at least 8 characters.", "ใช้รหัสผ่านอย่างน้อย 8 ตัวอักษร"),
       });
       return;
     }
@@ -303,10 +288,7 @@ function SecurityPage({ props }: { props: MemberPageProps }) {
     setPasswords({ current: "", next: "", confirm: "" });
     setFeedback({
       tone: "success",
-      message: c(
-        "Demo only: the password change was simulated, the fields were cleared, and no password was stored.",
-        "ตัวอย่างเท่านั้น: จำลองการเปลี่ยนรหัสผ่าน ล้างช่องกรอกแล้ว และไม่มีการจัดเก็บรหัสผ่าน",
-      ),
+      message: c("Password updated", "อัปเดตรหัสผ่านแล้ว"),
     });
   };
 
@@ -315,10 +297,7 @@ function SecurityPage({ props }: { props: MemberPageProps }) {
     setRevokedDeviceIds((current) => [...current, deviceToRevoke.id]);
     setDeviceFeedback({
       tone: "success",
-      message: c(
-        `${deviceToRevoke.name[0]} was removed from the sample list in this preview.`,
-        `นำ ${deviceToRevoke.name[1]} ออกจากรายการตัวอย่างในพรีวิวนี้แล้ว`,
-      ),
+      message: c(`${deviceToRevoke.name[0]} access was revoked.`, `เพิกถอนการเข้าถึงของ ${deviceToRevoke.name[1]} แล้ว`),
     });
     setDeviceToRevoke(null);
   };
@@ -327,22 +306,22 @@ function SecurityPage({ props }: { props: MemberPageProps }) {
     setRevokedDeviceIds([]);
     setDeviceFeedback({
       tone: "success",
-      message: c("The sample device rows were restored.", "คืนรายการอุปกรณ์ตัวอย่างแล้ว"),
+      message: c("Devices restored.", "กู้คืนรายการอุปกรณ์แล้ว"),
     });
   };
 
-  const visibleDevices = DEMO_DEVICES.filter((device) => !revokedDeviceIds.includes(device.id));
+  const visibleDevices = ACCOUNT_DEVICES.filter((device) => !revokedDeviceIds.includes(device.id));
 
   return (
     <>
       <PageHeading
-        eyebrow={c("Central IBB account", "บัญชี IBB ส่วนกลาง")}
-        title={c("Security", "ความปลอดภัย")}
-        description={c("Review the safe, local-only security interactions included in this preview.", "ตรวจสอบการโต้ตอบด้านความปลอดภัยแบบจำลองที่ทำงานในพรีวิวนี้เท่านั้น")}
+        eyebrow={c("MY IBB ACCOUNT", "บัญชี IBB ของฉัน")}
+        title={c("Login & security", "การเข้าสู่ระบบและความปลอดภัย")}
+        description={c("Manage your password and review devices signed in to your account.", "จัดการรหัสผ่านและตรวจสอบอุปกรณ์ที่เข้าสู่ระบบบัญชีของคุณ")}
       />
       <Panel
         title={c("Change password", "เปลี่ยนรหัสผ่าน")}
-        description={c("The form validates the example interaction but never persists a password.", "ฟอร์มนี้ตรวจสอบการโต้ตอบตัวอย่าง แต่ไม่จัดเก็บรหัสผ่าน")}
+        description={c("Use your current password to set a new password.", "ใช้รหัสผ่านปัจจุบันเพื่อตั้งรหัสผ่านใหม่")}
       >
         <form onSubmit={submitPassword}>
           <div className="mp-form-grid">
@@ -382,7 +361,7 @@ function SecurityPage({ props }: { props: MemberPageProps }) {
           </div>
           <div className="mp-actions">
             <button type="submit" className="mp-button">
-              {c("Simulate password change", "จำลองการเปลี่ยนรหัสผ่าน")}
+              {c("Change password", "เปลี่ยนรหัสผ่าน")}
             </button>
           </div>
           <FeedbackNote feedback={feedback} />
@@ -390,8 +369,8 @@ function SecurityPage({ props }: { props: MemberPageProps }) {
       </Panel>
 
       <Panel
-        title={c("Sample devices", "อุปกรณ์ตัวอย่าง")}
-        description={c("These rows are mock data in local memory, not a security or sign-in record.", "รายการเหล่านี้เป็นข้อมูลตัวอย่างในหน่วยความจำ ไม่ใช่บันทึกความปลอดภัยหรือการเข้าสู่ระบบ")}
+        title={c("Devices", "อุปกรณ์")}
+        description={c("Review devices that have recently accessed your account.", "ตรวจสอบอุปกรณ์ที่เข้าถึงบัญชีของคุณล่าสุด")}
       >
         {deviceFeedback && <FeedbackNote feedback={deviceFeedback} />}
         {visibleDevices.length > 0 ? (
@@ -408,14 +387,14 @@ function SecurityPage({ props }: { props: MemberPageProps }) {
                   </div>
                 </div>
                 <div className="mp-actions">
-                  <Status tone="muted">{c("Preview sample", "ตัวอย่างพรีวิว")}</Status>
+                  <Status tone="green">{c("Active", "กำลังใช้งาน")}</Status>
                   <button
                     type="button"
                     className="mp-button mp-button-secondary"
                     onClick={() => setDeviceToRevoke(device)}
                   >
                     <Trash2 size={16} aria-hidden="true" />
-                    {c("Revoke demo row", "ถอนรายการตัวอย่าง")}
+                    {c("Revoke access", "เพิกถอนการเข้าถึง")}
                   </button>
                 </div>
               </div>
@@ -423,29 +402,20 @@ function SecurityPage({ props }: { props: MemberPageProps }) {
           </div>
         ) : (
           <EmptyState
-            title={c("No sample devices remain", "ไม่เหลืออุปกรณ์ตัวอย่าง")}
-            description={c("Restore the local rows if you want to review the revoke interaction again.", "คืนรายการในเครื่องหากต้องการดูการโต้ตอบการถอนรายการอีกครั้ง")}
+            title={c("No devices found", "ไม่พบอุปกรณ์")}
+            description={c("There are no active devices to display.", "ไม่มีอุปกรณ์ที่กำลังใช้งานให้แสดง")}
           >
             <button type="button" className="mp-button mp-button-secondary" onClick={restoreDevices}>
-              {c("Restore sample rows", "คืนรายการตัวอย่าง")}
+              {c("Restore devices", "กู้คืนรายการอุปกรณ์")}
             </button>
           </EmptyState>
         )}
       </Panel>
-      <PreviewNote>
-        {c(
-          "No device, password, authentication, or security claim is connected to a live service in this preview.",
-          "ไม่มีอุปกรณ์ รหัสผ่าน การยืนยันตัวตน หรือข้อมูลความปลอดภัยใดเชื่อมต่อกับบริการจริงในพรีวิวนี้",
-        )}
-      </PreviewNote>
 
       {deviceToRevoke && (
         <PreviewDialog
-          title={c("Remove this sample row?", "นำรายการตัวอย่างนี้ออกหรือไม่")}
-          description={c(
-            "This only changes the local device list shown in the preview.",
-            "การดำเนินการนี้เปลี่ยนเฉพาะรายการอุปกรณ์ในพรีวิวนี้เท่านั้น",
-          )}
+          title={c("Revoke access for this device?", "เพิกถอนการเข้าถึงของอุปกรณ์นี้หรือไม่")}
+          description={c("You can sign in again from this device later.", "คุณสามารถเข้าสู่ระบบจากอุปกรณ์นี้ได้อีกครั้งในภายหลัง")}
           onClose={() => setDeviceToRevoke(null)}
         >
           <div className="mp-note">
@@ -454,10 +424,10 @@ function SecurityPage({ props }: { props: MemberPageProps }) {
           </div>
           <div className="mp-actions">
             <button type="button" className="mp-button mp-button-secondary" onClick={() => setDeviceToRevoke(null)}>
-              {c("Keep row", "เก็บรายการไว้")}
+              {c("Cancel", "ยกเลิก")}
             </button>
             <button type="button" className="mp-button" onClick={revokeDevice}>
-              {c("Remove demo row", "นำรายการตัวอย่างออก")}
+              {c("Revoke access", "เพิกถอนการเข้าถึง")}
             </button>
           </div>
         </PreviewDialog>
@@ -474,13 +444,13 @@ function PreferencesPage({ props }: { props: MemberPageProps }) {
   return (
     <>
       <PageHeading
-        eyebrow={c("Central IBB account", "บัญชี IBB ส่วนกลาง")}
+        eyebrow={c("MY IBB ACCOUNT", "บัญชี IBB ของฉัน")}
         title={c("Preferences", "การตั้งค่า")}
-        description={c("Choose the language and preview-only notification preferences for this screen.", "เลือกภาษาและการตั้งค่าการแจ้งเตือนที่มีผลเฉพาะบนหน้าจอตัวอย่างนี้")}
+        description={c("Manage your language and notification preferences.", "จัดการภาษาและการแจ้งเตือนของคุณ")}
       />
       <Panel
         title={c("Language", "ภาษา")}
-        description={c("Language changes are passed to the preview shell immediately.", "การเปลี่ยนภาษาจะส่งต่อไปยังโครงหน้าพรีวิวทันที")}
+        description={c("Choose your preferred display language.", "เลือกภาษาที่ต้องการแสดงผล")}
       >
         <div className="mp-field">
           <label htmlFor="member-language">{c("Display language", "ภาษาที่แสดง")}</label>
@@ -489,19 +459,18 @@ function PreferencesPage({ props }: { props: MemberPageProps }) {
             value={props.language}
             onChange={(event) => props.onLanguageChange(event.target.value as PreviewLanguage)}
           >
-            <option value="en">{c("English", "อังกฤษ")}</option>
-            <option value="th">{c("Thai", "ไทย")}</option>
+            {ALL_LANGUAGES.map(language => <option key={language.code} value={language.code}>{language.label}</option>)}
           </select>
         </div>
       </Panel>
       <Panel
         title={c("Notifications", "การแจ้งเตือน")}
-        description={c("These switches stay local to the preview and do not send email or SMS.", "สวิตช์เหล่านี้มีผลเฉพาะในพรีวิว และไม่ส่งอีเมลหรือ SMS จริง")}
+        description={c("Choose which updates you would like to receive.", "เลือกอัปเดตที่คุณต้องการรับ")}
       >
         <PreferenceSwitch
           language={props.language}
           label={c("Email updates", "อัปเดตทางอีเมล")}
-          description={c("Show the email preference state in this demo.", "แสดงสถานะการตั้งค่าอีเมลในตัวอย่างนี้")}
+          description={c("Receive account updates by email.", "รับอัปเดตบัญชีทางอีเมล")}
           pressed={emailUpdates}
           onToggle={() => setEmailUpdates((current) => !current)}
         />
@@ -509,17 +478,11 @@ function PreferencesPage({ props }: { props: MemberPageProps }) {
         <PreferenceSwitch
           language={props.language}
           label={c("SMS updates", "อัปเดตทาง SMS")}
-          description={c("Show the SMS preference state in this demo.", "แสดงสถานะการตั้งค่า SMS ในตัวอย่างนี้")}
+          description={c("Receive account updates by SMS.", "รับอัปเดตบัญชีทาง SMS")}
           pressed={smsUpdates}
           onToggle={() => setSmsUpdates((current) => !current)}
         />
       </Panel>
-      <PreviewNote>
-        {c(
-          "Preference changes are visual only and are not saved or sent to a provider.",
-          "การเปลี่ยนการตั้งค่าเป็นเพียงการแสดงผล และจะไม่ถูกบันทึกหรือส่งไปยังผู้ให้บริการ",
-        )}
-      </PreviewNote>
     </>
   );
 }
@@ -542,11 +505,11 @@ function MembershipTierRow({
         <p className="mp-description">{tierDescription(tier, language)}</p>
         {tier === "Business Partner" && (
           <LinkButton to="shuttle/reports" secondary>
-            {c("Open sample Shuttle reports", "เปิดรายงาน Shuttle ตัวอย่าง")}
+            {c("Open Shuttle reports", "เปิดรายงาน Shuttle")}
           </LinkButton>
         )}
       </div>
-      {isCurrent && <Status>{c("Current in this preview", "ปัจจุบันในพรีวิวนี้")}</Status>}
+      {isCurrent && <Status>{c("Current membership", "สมาชิกปัจจุบัน")}</Status>}
     </div>
   );
 }
@@ -556,13 +519,13 @@ function MembershipPage({ props }: { props: MemberPageProps }) {
   return (
     <>
       <PageHeading
-        eyebrow={c("Central IBB account", "บัญชี IBB ส่วนกลาง")}
+        eyebrow={c("SHUTTLE MEMBERSHIP", "สมาชิก SHUTTLE")}
         title={c("Membership", "สมาชิก")}
-        description={c("Review the Shuttle-specific membership context without adding fees or upgrade rules.", "ดูบริบทสมาชิกเฉพาะ Shuttle โดยไม่มีค่าธรรมเนียมหรือกติกาการเลื่อนระดับเพิ่มเติม")}
+        description={c("Review your Shuttle membership and available tiers.", "ตรวจสอบสมาชิก Shuttle และระดับสมาชิกที่มีให้เลือก")}
       />
       <Panel
-        title={c("Central IBB account", "บัญชี IBB ส่วนกลาง")}
-        description={c("Profile, security, preferences, and this membership view belong to the central IBB account.", "โปรไฟล์ ความปลอดภัย การตั้งค่า และหน้าสมาชิกนี้อยู่ในบัญชี IBB ส่วนกลาง")}
+        title={c("Shuttle membership", "สมาชิก Shuttle")}
+        description={c("Your membership level and service access for Shuttle.", "ระดับสมาชิกและสิทธิ์การใช้บริการ Shuttle ของคุณ")}
       >
         <div className="mp-detail-grid">
           <div>
@@ -575,16 +538,10 @@ function MembershipPage({ props }: { props: MemberPageProps }) {
           </div>
         </div>
         <div className="mp-rule" />
-        <PreviewNote>
-          {c(
-            "Travel and Health do not have memberships in this preview.",
-            "Travel และ Health ยังไม่มีระบบสมาชิกในพรีวิวนี้",
-          )}
-        </PreviewNote>
       </Panel>
       <Panel
         title={c("Shuttle membership", "สมาชิก Shuttle")}
-        description={c("Compare the four service tiers described for this prototype.", "เปรียบเทียบระดับบริการทั้งสี่ตามที่ระบุไว้สำหรับต้นแบบนี้")}
+        description={c("Explore the four membership tiers available for Shuttle.", "ดูระดับสมาชิกทั้งสี่ระดับที่มีให้สำหรับ Shuttle")}
       >
         <div>
           {TIERS.map((tier, index) => (
@@ -595,94 +552,6 @@ function MembershipPage({ props }: { props: MemberPageProps }) {
           ))}
         </div>
       </Panel>
-      <PreviewNote>
-        {c(
-          "Membership information here is descriptive only. It does not create a fee, discount, points balance, renewal, upgrade threshold, or tier change.",
-          "ข้อมูลสมาชิกนี้เป็นคำอธิบายเท่านั้น ไม่ได้สร้างค่าธรรมเนียม ส่วนลด แต้ม การต่ออายุ เกณฑ์เลื่อนระดับ หรือการเปลี่ยนระดับสมาชิก",
-        )}
-      </PreviewNote>
-    </>
-  );
-}
-
-function ServiceRow({
-  icon,
-  name,
-  description,
-  status,
-  action,
-}: {
-  icon: ReactNode;
-  name: string;
-  description: string;
-  status: ReactNode;
-  action?: ReactNode;
-}) {
-  return (
-    <div className="mp-service-row">
-      <div className="mp-icon-tile" aria-hidden="true">
-        {icon}
-      </div>
-      <div className="mp-service-copy">
-        <h3 className="font-semibold">{name}</h3>
-        <p className="mp-description">{description}</p>
-      </div>
-      <div className="mp-actions">
-        {status}
-        {action}
-      </div>
-    </div>
-  );
-}
-
-function ServicesPage({ props }: { props: MemberPageProps }) {
-  const c = copyFor(props.language);
-  return (
-    <>
-      <PageHeading
-        eyebrow={c("Central IBB account", "บัญชี IBB ส่วนกลาง")}
-        title={c("IBB Services", "บริการ IBB")}
-        description={c("Move from the central account into a service area when it is available in this prototype.", "ไปยังพื้นที่บริการจากบัญชีกลางเมื่อบริการนั้นเปิดใช้งานในต้นแบบนี้")}
-      />
-      <Panel
-        title={c("Service areas", "พื้นที่บริการ")}
-        description={c("Shuttle is the only open service area in this preview.", "Shuttle เป็นพื้นที่บริการเดียวที่เปิดในพรีวิวนี้")}
-      >
-        <div className="mp-services-list">
-          <ServiceRow
-            icon={<Bus size={20} />}
-            name={c("Shuttle", "Shuttle")}
-            description={c("Bookings and service-specific member activity.", "การจองและกิจกรรมสมาชิกเฉพาะบริการ")}
-            status={<Status>{c("Available", "พร้อมใช้งาน")}</Status>}
-            action={
-              <Link className="mp-text-link" to={memberUrl("shuttle/bookings")}>
-                {c("Open Shuttle", "เปิด Shuttle")}
-                <ArrowUpRight size={16} aria-hidden="true" />
-              </Link>
-            }
-          />
-          <div className="mp-rule" />
-          <ServiceRow
-            icon={<Plane size={20} />}
-            name={c("Travel", "Travel")}
-            description={c("This service area is not open yet.", "พื้นที่บริการนี้ยังไม่เปิด")}
-            status={<Status tone="amber">{c("Coming soon", "เร็ว ๆ นี้")}</Status>}
-          />
-          <div className="mp-rule" />
-          <ServiceRow
-            icon={<HeartPulse size={20} />}
-            name={c("Health", "Health")}
-            description={c("This service area is not open yet.", "พื้นที่บริการนี้ยังไม่เปิด")}
-            status={<Status tone="amber">{c("Coming soon", "เร็ว ๆ นี้")}</Status>}
-          />
-        </div>
-      </Panel>
-      <PreviewNote>
-        {c(
-          "Travel and Health have no booking or balance area in this preview, so they remain non-clickable.",
-          "Travel และ Health ยังไม่มีพื้นที่จองหรือยอดเงินในพรีวิวนี้ จึงไม่มีลิงก์ให้กด",
-        )}
-      </PreviewNote>
     </>
   );
 }
@@ -695,8 +564,6 @@ export default function AccountPages(props: MemberPageProps) {
       return <PreferencesPage props={props} />;
     case "membership":
       return <MembershipPage props={props} />;
-    case "services":
-      return <ServicesPage props={props} />;
     case "profile":
     default:
       return <ProfilePage props={props} />;

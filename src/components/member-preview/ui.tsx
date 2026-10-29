@@ -2,20 +2,26 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import * as Dialog from "@radix-ui/react-dialog";
 import { ArrowUpRight, Info, X } from "lucide-react";
+import type { Language } from "@/contexts/LanguageContext";
 
-export type PreviewLanguage = "en" | "th";
+export type PreviewLanguage = Language;
 export type MemberTier = "General" | "VIP" | "VVIP" | "Business Partner";
 export interface PreviewProfile { name: string; email: string; phone: string; country: string; }
 export interface MemberPageProps {
   page: string;
   language: PreviewLanguage;
   tier: MemberTier;
+  accountKey: string;
   profile: PreviewProfile;
   onProfileChange: (profile: PreviewProfile) => void;
   onLanguageChange: (language: PreviewLanguage) => void;
   notify: (message: string) => void;
 }
-export const memberUrl = (path: string) => `/member-preview/${path}?from=shuttle`;
+export const memberUrl = (path: string) => {
+  const accountPages = ["profile", "security", "preferences"];
+  const scopedPath = accountPages.includes(path) ? `account/${path}` : path === "membership" ? "shuttle/membership" : ["overview", "services"].includes(path) ? "shuttle/overview" : path;
+  return `/member-preview/${scopedPath}?from=shuttle`;
+};
 export const copyFor = (language: PreviewLanguage) => (en: string, th: string) => language === "th" ? th : en;
 export const money = (amount: number, currency = "THB") => new Intl.NumberFormat("en-US", { style: "currency", currency, maximumFractionDigits: 2 }).format(amount);
 
