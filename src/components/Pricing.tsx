@@ -103,6 +103,7 @@ const Pricing = () => {
               <button
                 key={v}
                 onClick={() => setSelectedVehicle(v)}
+                aria-pressed={selectedVehicle === v}
                 className={cn(
                   "px-4 py-2 rounded-full text-sm font-medium transition-all",
                   selectedVehicle === v
@@ -140,13 +141,12 @@ const Pricing = () => {
                 key={index}
                 onClick={() => setSelectedVehicle(plan.vehicle)}
                 className={cn(
-                  "relative bg-card rounded-xl shadow-soft hover:shadow-medium transition-all p-6 lg:p-8 animate-fade-in-up opacity-0 cursor-pointer",
+                  "relative bg-card rounded-xl shadow-soft hover:shadow-medium hover:scale-105 hover:z-10 transition-all p-6 lg:p-8 cursor-pointer",
                   isSelected
-                    ? "border-2 border-primary md:scale-105 ring-2 ring-primary/20"
+                    ? "border-2 border-primary md:scale-105 ring-2 ring-primary/20 shadow-medium z-10"
                     : "border border-border hover:border-primary/30",
                   plan.popular && !isSelected && "border-primary/50"
                 )}
-                style={{ animationDelay: `${index * 150}ms`, animationFillMode: 'forwards' }}
               >
                 {plan.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold px-4 py-1 rounded-full">

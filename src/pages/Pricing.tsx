@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, startTransition, memo, Component, ReactNode } from "react";
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import PublicNavigation from "@/components/PublicNavigation";
 import Footer from "@/components/Footer";
@@ -205,7 +206,7 @@ const PricingTables = memo(({ vehicle, t, formatPrice }: {
 const PricingPage = () => {
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleType>("car");
   const [tableVehicle, setTableVehicle] = useState<VehicleType>("car");
-  const { t } = useLevel2Language();
+  const { t, language } = useLevel2Language();
   const { selectedCurrency, setSelectedCurrency, convertPrice, loading } = useCurrencyConverter();
 
   // Dynamic price formatter — uses currency engine (L3)
@@ -256,11 +257,11 @@ const PricingPage = () => {
           </p>
         </div>
         <div className="absolute z-10 bottom-[26%] left-0 right-0 text-center">
-          <a href="/#booking">
+          <Link to={`/${language}/shuttle#booking`}>
             <Button variant="cta" size="lg" className="animate-blink h-14 px-[1.825rem] border-0">
               {t('hero.bookNow', 'Book Now')}
             </Button>
-          </a>
+          </Link>
         </div>
       </section>
 

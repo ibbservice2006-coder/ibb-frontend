@@ -44,11 +44,12 @@ const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
     },
   } : undefined);
 
+  const bookingHref = `/${language}/shuttle#booking`;
   const navLinks = [
     { name: t('nav.home', 'Home'), href: "/landing", isRoute: true },
     { name: t('nav.services', 'Services'), href: "#services", isRoute: false },
     { name: t('nav.pricing', 'Pricing'), href: "/pricing", isRoute: true },
-    { name: t('nav.booking', 'Book Now'), href: "#booking", isRoute: false },
+    { name: t('nav.booking', 'Book Now'), href: bookingHref, isRoute: true },
     ...(navigationContext?.signedIn && navigationContext.balanceHref ? [{ name: t('nav.balancePayments', 'Balance & Payments'), href: navigationContext.balanceHref, isRoute: true }] : []),
     { name: t('nav.contact', 'Contact'), href: "#contact", isRoute: false },
   ].map(link => memberContext ? {
@@ -58,6 +59,12 @@ const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
     } : link);
   const accountHref = navigationContext ? navigationContext.signedIn ? navigationContext.accountHref : navigationContext.loginHref : "/auth";
   const accountLabel = navigationContext?.signedIn ? language === "th" ? "บัญชี IBB ของฉัน" : "My IBB account" : `${t('nav.login', 'Login')} / ${t('nav.signup', 'Sign Up')}`;
+
+  const handleTopLevelNavigation = (href: string) => {
+    if (href === "/landing" || href === "/pricing") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLang = e.target.value as Language;
@@ -104,6 +111,7 @@ const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
                 {link.isRoute ? (
                   <Link
                     to={link.href}
+                    onClick={() => handleTopLevelNavigation(link.href)}
                     className="text-secondary-foreground hover:text-secondary-foreground/80 text-sm lg:text-[16.5px] transition-colors hover:underline underline-offset-4"
                   >
                     {link.name}
@@ -159,7 +167,10 @@ const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
                   {link.isRoute ? (
                     <Link
                       to={link.href}
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => {
+                        handleTopLevelNavigation(link.href);
+                        setIsOpen(false);
+                      }}
                       className="block py-2 text-secondary-foreground hover:text-secondary-foreground/80 transition-colors"
                     >
                       {link.name}
