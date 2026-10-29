@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Helmet } from "react-helmet-async";
 import Navigation from "@/components/Navigation";
+import PublicNavigation from "@/components/PublicNavigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -14,7 +15,17 @@ import { Button } from "@/components/ui/button";
 import { LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
 
+const desktopQuery = "(min-width: 1280px)";
+const subscribeToDesktop = (onChange: () => void) => {
+  const query = window.matchMedia(desktopQuery);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+};
+const isDesktopScreen = () => window.matchMedia(desktopQuery).matches;
+const serverDesktopScreen = () => false;
+
 const Balance = () => {
+  const isDesktop = useSyncExternalStore(subscribeToDesktop, isDesktopScreen, serverDesktopScreen);
   const { language } = useLanguage();
   const t = translations[language];
   const { user } = useAuth();
@@ -28,8 +39,10 @@ const Balance = () => {
         <meta name="description" content="Manage your wallet balance and payments for IBB Shuttle Service" />
       </Helmet>
 
-      <Header />
-      <Navigation />
+      <div className="luxury-preview balance-home-shell contents">
+        {isDesktop ? <Header restoreOriginalOnSmallScreens /> : <Header />}
+        {isDesktop ? <PublicNavigation /> : <Navigation />}
+      </div>
 
       <main className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-16">
@@ -93,7 +106,9 @@ const Balance = () => {
         </div>
       </main>
 
-      <Footer />
+      <div className="luxury-preview balance-home-shell contents">
+        <Footer />
+      </div>
     </>
   );
 };

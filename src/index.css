@@ -173,6 +173,7 @@
   }
 
   /* Home and Pricing share the approved raised navigation and Get a Quote gold palette. */
+  .luxury-preview.balance-home-shell > nav,
   .luxury-preview:has(> main > section#home) > nav,
   .luxury-preview:has(> section#home) > nav {
     background:
