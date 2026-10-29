@@ -18,6 +18,8 @@ interface LocationAutocompleteProps {
   onChange: (value: string) => void;
   onSelect: (location: Location | { raw_input: string, is_manual_input: boolean }) => void; // Modified to handle manual input
   icon?: React.ReactNode;
+  required?: boolean;
+  disabled?: boolean;
 }
 
 // Helper for Session ID (Important 5)
@@ -37,13 +39,16 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   context,
   onChange,
   onSelect,
-  icon
+  icon,
+  required = false,
+  disabled = false,
 }) => {
   const [query, setQuery] = useState(value);
   const [results, setResults] = useState<Location[]>([]);
   const [recentSearches, setRecentSearches] = useState<Location[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [requestError, setRequestError] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [showSpinner, setShowSpinner] = useState(false);
   
@@ -91,6 +96,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   const fetchResults = useCallback(async (searchQuery: string) => {
     if (searchQuery.length < 2) {
       setResults([]);
+      setRequestError(false);
       return;
     }
 
@@ -98,6 +104,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
     abortControllerRef.current = new AbortController();
 
     setIsLoading(true);
+    setRequestError(false);
     const spinnerTimer = setTimeout(() => setShowSpinner(true), 150);
 
     try {
@@ -107,13 +114,18 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
       url.searchParams.append('limit', '10');
 
       const response = await fetch(url.toString(), { signal: abortControllerRef.current.signal });
+      if (!response.ok) throw new Error(`Autocomplete request failed: ${response.status}`);
       const result = await response.json();
       if (result.success) {
         setResults(result.data || []);
         setHighlightedIndex(-1);
-      }
+      } else throw new Error('Autocomplete request returned an error');
     } catch (error: any) {
-      if (error.name !== 'AbortError') console.error('Fetch error:', error);
+      if (error.name !== 'AbortError') {
+        setResults([]);
+        setRequestError(true);
+        console.error('Fetch error:', error);
+      }
     } finally {
       clearTimeout(spinnerTimer);
       setIsLoading(false);
@@ -218,6 +230,8 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
           ref={inputRef}
           type="text"
           value={query}
+          required={required}
+          disabled={disabled}
           autoComplete="off"
           onKeyDown={handleKeyDown}
           onChange={(e) => {
@@ -238,11 +252,11 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
             }, 100);
           }}
           placeholder={placeholder}
-          className="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-2xl focus:ring-4 focus:ring-gold/10 focus:border-gold outline-none transition-all pr-12 text-gray-800 placeholder:text-gray-400 shadow-sm group-hover:border-gray-300"
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm text-gray-800 placeholder:text-muted-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 group-hover:border-gray-300"
         />
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
           {showSpinner ? (
-            <Loader2 className="w-5 h-5 text-gold animate-spin" />
+            <Loader2 className="w-4 h-4 text-gold animate-spin" />
           ) : query ? (
             <button 
               onClick={() => { 
@@ -252,13 +266,14 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
                 inputRef.current?.focus(); 
                 logSelection(undefined, undefined, false, query, 'cleared'); // Log cleared on clear
               }}
+              disabled={disabled}
               className="p-1 hover:bg-gray-100 rounded-full transition-colors"
               aria-label="Clear input"
             >
-              <X className="w-5 h-5 text-gray-400" />
+              <X className="w-4 h-4 text-gray-400" />
             </button>
           ) : (
-            <Search className="w-5 h-5 text-gray-300" />
+            <Search className="w-4 h-4 text-gray-300" />
           )}
         </div>
       </div>
@@ -297,15 +312,19 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
           ))}
 
           {query.length >= 2 && results.length === 0 && !isLoading && (
-            <div className="p-10 text-center">
-              <div className="inline-flex p-4 bg-gray-50 rounded-full mb-4">
-                <Search className="w-8 h-8 text-gray-200" />
+            <div className="p-4 text-center">
+              <div className="inline-flex p-2.5 bg-gray-50 rounded-full mb-2">
+                <Search className="w-5 h-5 text-gray-200" />
               </div>
-              <p className="text-base text-gray-600 font-bold">No results for "{query}"</p>
-              <p className="text-sm text-gray-400 mt-1">Check spelling or try a city name</p>
+              <p className="text-sm text-gray-600 font-bold">
+                {requestError ? 'Suggestions are temporarily unavailable' : `No results for "${query}"`}
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                {requestError ? 'You can still enter this location manually' : 'Check spelling or try a city name'}
+              </p>
               <button 
                 onClick={handleManualInput}
-                className="mt-4 px-4 py-2 bg-gold text-white rounded-lg hover:bg-gold-dark transition-colors"
+                className="mt-3 px-3 py-1.5 text-sm bg-gold text-white rounded-lg hover:bg-gold-dark transition-colors"
               >
                 Use "{query}" as manual input
               </button>
