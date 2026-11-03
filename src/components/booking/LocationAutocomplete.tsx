@@ -1,28 +1,39 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Search, MapPin, Plane, Hotel, Anchor, Map, Loader2, X, Clock } from 'lucide-react';
+import { loadGooglePlaces, type GooglePlace, type GoogleSuggestion } from '@/lib/google-places';
 
 interface Location {
   id: string;
   name: string;
   type: string;
   city: string;
-  display_name: string; // Added for frontend display
-  operational_name: string; // Added for driver/admin display
+  display_name: string;
+  operational_name: string;
+  formatted_address?: string;
+  latitude?: number;
+  longitude?: number;
+  provider: 'google';
+  provider_place_id?: string;
+  googleSuggestion?: GoogleSuggestion;
+}
+
+interface ManualLocation {
+  raw_input: string;
+  is_manual_input: boolean;
 }
 
 interface LocationAutocompleteProps {
   label: string;
   placeholder: string;
   value: string;
-  context: 'pickup' | 'dropoff'; // Important 6 - Contextual Recents
+  context: 'pickup' | 'dropoff';
   onChange: (value: string) => void;
-  onSelect: (location: Location | { raw_input: string, is_manual_input: boolean }) => void; // Modified to handle manual input
+  onSelect: (location: Location | ManualLocation) => void;
   icon?: React.ReactNode;
   required?: boolean;
   disabled?: boolean;
 }
 
-// Helper for Session ID (Important 5)
 const getSessionId = () => {
   let sid = sessionStorage.getItem('ibb_search_session');
   if (!sid) {
@@ -30,6 +41,38 @@ const getSessionId = () => {
     sessionStorage.setItem('ibb_search_session', sid);
   }
   return sid;
+};
+
+const getLanguage = () => document.documentElement.lang?.split('-')[0] || 'en';
+
+const toLocation = (suggestion: GoogleSuggestion, place?: GooglePlace): Location | null => {
+  const prediction = suggestion.placePrediction;
+  if (!prediction) return null;
+
+  const displayName = place?.displayName?.text || prediction.mainText?.text || prediction.text?.text || '';
+  const address = place?.formattedAddress || prediction.secondaryText?.text || '';
+  const id = place?.id || prediction.placeId || displayName;
+  const latitude = place?.location?.lat?.();
+  const longitude = place?.location?.lng?.();
+  const type = place?.types?.[0]?.replace(/_/g, ' ') || 'place';
+  const city = prediction.secondaryText?.text || address;
+
+  if (!displayName) return null;
+
+  return {
+    id,
+    name: displayName,
+    type,
+    city,
+    display_name: address ? `${displayName}, ${address}` : displayName,
+    operational_name: displayName,
+    formatted_address: address,
+    latitude,
+    longitude,
+    provider: 'google',
+    provider_place_id: id,
+    googleSuggestion: suggestion,
+  };
 };
 
 const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
@@ -51,160 +94,197 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   const [requestError, setRequestError] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [showSpinner, setShowSpinner] = useState(false);
-  
+
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const sessionTokenRef = useRef<unknown | null>(null);
+  const requestIdRef = useRef(0);
   const sessionId = useMemo(() => getSessionId(), []);
-
-  // Contextual Storage Key (Important 6)
   const storageKey = `recent_${context}_locations`;
 
   useEffect(() => {
     const saved = localStorage.getItem(storageKey);
-    if (saved) {
-      try {
-        setRecentSearches(JSON.parse(saved).slice(0, 5));
-      } catch (e) { console.error("Recent parse error"); }
+    if (!saved) return;
+    try {
+      setRecentSearches(JSON.parse(saved).slice(0, 5));
+    } catch {
+      localStorage.removeItem(storageKey);
     }
   }, [storageKey]);
 
+  useEffect(() => {
+    setQuery(value);
+  }, [value]);
+
   const saveToRecent = (location: Location) => {
-    const updated = [location, ...recentSearches.filter(item => item.id !== location.id)].slice(0, 5);
+    const updated = [location, ...recentSearches.filter((item) => item.id !== location.id)].slice(0, 5);
     setRecentSearches(updated);
     localStorage.setItem(storageKey, JSON.stringify(updated));
   };
 
-  const logSelection = async (location?: Location, position?: number, isManualInput: boolean = false, rawInput?: string, noSelectionReason?: 'no_results' | 'abandoned' | 'cleared' | 'manual_override' | 'timeout') => {
+  const logSelection = useCallback(async (
+    location?: Location,
+    position?: number,
+    isManualInput = false,
+    rawInput?: string,
+    noSelectionReason?: 'no_results' | 'abandoned' | 'cleared' | 'manual_override' | 'timeout',
+  ) => {
     try {
-      fetch('https://ibb-booking-api.ibb-service2006.workers.dev/locations/log-selection', {
+      await fetch('https://ibb-booking-api.ibb-service2006.workers.dev/locations/log-selection', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           session_id: sessionId,
-          query: query,
+          query,
           location_id: location?.id,
-          position: position,
+          position,
+          provider: 'google',
           is_manual_input: isManualInput,
           raw_input: rawInput || query,
           no_selection_reason: noSelectionReason,
-        })
+        }),
       });
-    } catch (e) { /* silent log fail */ }
-  };
+    } catch {
+      // Logging must never block booking or autocomplete.
+    }
+  }, [query, sessionId]);
 
   const fetchResults = useCallback(async (searchQuery: string) => {
-    if (searchQuery.length < 1) {
+    const requestId = ++requestIdRef.current;
+    abortControllerRef.current?.abort();
+
+    if (searchQuery.trim().length < 1) {
       setResults([]);
       setRequestError(false);
+      setIsLoading(false);
       return;
     }
 
-    if (abortControllerRef.current) abortControllerRef.current.abort();
-    abortControllerRef.current = new AbortController();
-
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
     setIsLoading(true);
     setRequestError(false);
-    const spinnerTimer = setTimeout(() => setShowSpinner(true), 150);
+    const spinnerTimer = window.setTimeout(() => setShowSpinner(true), 150);
 
     try {
-      const url = new URL('https://ibb-booking-api.ibb-service2006.workers.dev/locations/autocomplete');
-      url.searchParams.append('query', searchQuery);
-      url.searchParams.append('session_id', sessionId);
-      url.searchParams.append('limit', '10');
+      const google = await loadGooglePlaces();
+      if (requestId !== requestIdRef.current || controller.signal.aborted) return;
 
-      const response = await fetch(url.toString(), { signal: abortControllerRef.current.signal });
-      if (!response.ok) throw new Error(`Autocomplete request failed: ${response.status}`);
-      const result = await response.json();
-      if (result.success) {
-        setResults(result.data || []);
-        setHighlightedIndex(-1);
-      } else throw new Error('Autocomplete request returned an error');
-    } catch (error: any) {
-      if (error.name !== 'AbortError') {
-        setResults([]);
-        setRequestError(true);
-        console.error('Fetch error:', error);
+      if (!sessionTokenRef.current) {
+        sessionTokenRef.current = new google.maps.places.AutocompleteSessionToken();
       }
+
+      const response = await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions({
+        input: searchQuery,
+        language: getLanguage(),
+        region: 'th',
+        includedRegionCodes: ['th'],
+        sessionToken: sessionTokenRef.current,
+      });
+
+      if (requestId !== requestIdRef.current || controller.signal.aborted) return;
+
+      const locations = (response.suggestions || [])
+        .map((suggestion) => toLocation(suggestion))
+        .filter((location): location is Location => Boolean(location));
+      setResults(locations);
+      setHighlightedIndex(-1);
+    } catch (error) {
+      if (controller.signal.aborted || requestId !== requestIdRef.current) return;
+      setResults([]);
+      setRequestError(true);
+      console.error('Google Places autocomplete error:', error);
     } finally {
-      clearTimeout(spinnerTimer);
-      setIsLoading(false);
-      setShowSpinner(false);
+      window.clearTimeout(spinnerTimer);
+      if (requestId === requestIdRef.current) {
+        setIsLoading(false);
+        setShowSpinner(false);
+      }
     }
-  }, [sessionId]);
+  }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (query.length >= 1) fetchResults(query);
-      else setResults([]);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [query, fetchResults]);
+    const timer = window.setTimeout(() => fetchResults(query), 300);
+    return () => window.clearTimeout(timer);
+  }, [fetchResults, query]);
 
-  const handleSelect = (location: Location, position: number) => {
-    onSelect(location);
-    setQuery(location.display_name); // Use display_name for input field
-    saveToRecent(location);
-    logSelection(location, position);
+  useEffect(() => () => abortControllerRef.current?.abort(), []);
+
+  const handleSelect = async (location: Location, position: number) => {
+    const selected = results[position] || location;
+    let finalLocation = location;
+
+    try {
+      const google = await loadGooglePlaces();
+      const prediction = selected.googleSuggestion?.placePrediction;
+      const place = prediction?.toPlace?.();
+      if (place) {
+        await place.fetchFields({ fields: ['id', 'displayName', 'formattedAddress', 'location', 'types'] });
+        finalLocation = {
+          ...finalLocation,
+          name: place.displayName?.text || finalLocation.name,
+          display_name: place.formattedAddress
+            ? `${place.displayName?.text || finalLocation.name}, ${place.formattedAddress}`
+            : finalLocation.display_name,
+          formatted_address: place.formattedAddress || finalLocation.formatted_address,
+          latitude: place.location?.lat?.() ?? finalLocation.latitude,
+          longitude: place.location?.lng?.() ?? finalLocation.longitude,
+          type: place.types?.[0]?.replace(/_/g, ' ') || finalLocation.type,
+        };
+      }
+    } catch {
+      // Keep the prediction available if Place Details cannot be loaded.
+    }
+
+    onSelect(finalLocation);
+    setQuery(finalLocation.display_name);
+    saveToRecent(finalLocation);
+    logSelection(finalLocation, position);
+    setIsOpen(false);
+    setHighlightedIndex(-1);
+    sessionTokenRef.current = null;
+  };
+
+  const handleManualInput = () => {
+    if (!query.trim()) return;
+    onSelect({ raw_input: query, is_manual_input: true });
+    logSelection(undefined, undefined, true, query, 'manual_override');
     setIsOpen(false);
     setHighlightedIndex(-1);
   };
 
-  const handleManualInput = () => {
-    if (query.trim() !== '') {
-      onSelect({ raw_input: query, is_manual_input: true });
-      logSelection(undefined, undefined, true, query, 'manual_override');
-      setIsOpen(false);
-      setHighlightedIndex(-1);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (event: React.KeyboardEvent) => {
     const items = query.length < 1 ? recentSearches : results;
     if (!isOpen) {
-      if (e.key === 'Enter') {
-        handleManualInput(); // Allow manual input on Enter if dropdown is not open
-      }
+      if (event.key === 'Enter') handleManualInput();
       return;
     }
 
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      setHighlightedIndex(prev => (prev < items.length - 1 ? prev + 1 : 0));
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      setHighlightedIndex(prev => (prev > 0 ? prev - 1 : items.length - 1));
-    } else if (e.key === 'Enter') {
-      if (highlightedIndex >= 0) {
-        handleSelect(items[highlightedIndex], highlightedIndex);
-      } else {
-        handleManualInput(); // Allow manual input on Enter if no item is highlighted
-      }
-    } else if (e.key === 'Escape') {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setHighlightedIndex((previous) => (previous < items.length - 1 ? previous + 1 : 0));
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setHighlightedIndex((previous) => (previous > 0 ? previous - 1 : items.length - 1));
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      if (highlightedIndex >= 0 && items[highlightedIndex]) handleSelect(items[highlightedIndex], highlightedIndex);
+      else handleManualInput();
+    } else if (event.key === 'Escape') {
       setIsOpen(false);
-      if (query.trim() !== '' && results.length === 0 && !isLoading) {
-        logSelection(undefined, undefined, false, query, 'abandoned'); // Log abandoned on escape if no results and query exists
-      } else if (query.trim() === '' && results.length === 0) {
-        logSelection(undefined, undefined, false, query, 'cleared'); // Log cleared on escape if empty query
-      }
     }
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
-        if (query.trim() !== '' && results.length === 0 && !isLoading) {
-          logSelection(undefined, undefined, false, query, 'abandoned'); // Log abandoned if user clicks outside and no selection made
-        }
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [dropdownRef, query, results, isLoading]);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const getTypeIcon = (type: string, isRecent?: boolean) => {
     if (isRecent) return <Clock className="w-4 h-4 text-gray-400" />;
@@ -234,37 +314,29 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
           disabled={disabled}
           autoComplete="off"
           onKeyDown={handleKeyDown}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            onChange(e.target.value);
+          onChange={(event) => {
+            setQuery(event.target.value);
+            onChange(event.target.value);
             setIsOpen(true);
           }}
           onFocus={() => setIsOpen(true)}
-          onBlur={() => {
-            // Delay closing to allow click on results
-            setTimeout(() => {
-              if (!dropdownRef.current?.contains(document.activeElement)) {
-                setIsOpen(false);
-                if (query.trim() !== '' && results.length === 0 && !isLoading) {
-                  logSelection(undefined, undefined, false, query, 'abandoned'); // Log abandoned on blur if no selection made
-                }
-              }
-            }, 100);
-          }}
+          onBlur={() => window.setTimeout(() => {
+            if (!dropdownRef.current?.contains(document.activeElement)) setIsOpen(false);
+          }, 100)}
           placeholder={placeholder}
           className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm text-gray-800 placeholder:text-muted-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 group-hover:border-gray-300"
         />
         <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-          {showSpinner ? (
-            <Loader2 className="w-4 h-4 text-gold animate-spin" />
-          ) : query ? (
-            <button 
-              onClick={() => { 
-                setQuery(''); 
-                onChange(''); 
-                setResults([]); 
-                inputRef.current?.focus(); 
-                logSelection(undefined, undefined, false, query, 'cleared'); // Log cleared on clear
+          {showSpinner ? <Loader2 className="w-4 h-4 text-gold animate-spin" /> : query ? (
+            <button
+              type="button"
+              onClick={() => {
+                setQuery('');
+                onChange('');
+                setResults([]);
+                setIsOpen(true);
+                inputRef.current?.focus();
+                sessionTokenRef.current = null;
               }}
               disabled={disabled}
               className="p-1 hover:bg-gray-100 rounded-full transition-colors"
@@ -272,40 +344,36 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
             >
               <X className="w-4 h-4 text-gray-400" />
             </button>
-          ) : (
-            <Search className="w-4 h-4 text-gray-300" />
-          )}
+          ) : <Search className="w-4 h-4 text-gray-300" />}
         </div>
       </div>
 
-      {/* Dropdown Results */}
       {isOpen && (displayItems.length > 0 || (query.length >= 1 && !isLoading)) && (
         <div className="absolute z-[100] w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-2xl max-h-[50vh] overflow-y-auto overflow-x-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-          
           {query.length < 1 && recentSearches.length > 0 && (
             <div className="px-5 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-[0.1em] bg-gray-50/50 border-b border-gray-50">
               Recent {context} locations
             </div>
           )}
 
-          {displayItems.map((loc, index) => (
+          {displayItems.map((location, index) => (
             <button
-              key={`${loc.id}-${index}`}
-              onClick={() => handleSelect(loc, index)}
+              type="button"
+              key={`${location.id}-${index}`}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => handleSelect(location, index)}
               onMouseEnter={() => setHighlightedIndex(index)}
-              className={`w-full flex items-center gap-4 px-5 py-4 transition-all border-b border-gray-50 last:border-0 text-left ${
-                highlightedIndex === index ? 'bg-gold/[0.03]' : 'hover:bg-gray-50/50'
-              }`}
+              className={`w-full flex items-center gap-4 px-5 py-4 transition-all border-b border-gray-50 last:border-0 text-left ${highlightedIndex === index ? 'bg-gold/[0.03]' : 'hover:bg-gray-50/50'}`}
             >
               <div className={`p-2.5 rounded-xl transition-colors ${highlightedIndex === index ? 'bg-white shadow-sm' : 'bg-gray-50'}`}>
-                {getTypeIcon(loc.type, query.length < 1)}
+                {getTypeIcon(location.type, query.length < 1)}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-bold text-gray-900 truncate text-[15px]">{loc.display_name}</div>
-                <div className="text-[11px] font-bold text-gray-400 uppercase mt-0.5 tracking-wider flex items-center gap-2">
-                  <span className="text-gold">{loc.type.replace('_', ' ')}</span>
+                <div className="font-bold text-gray-900 truncate text-[15px]">{location.name}</div>
+                <div className="text-[11px] font-bold text-gray-400 mt-0.5 tracking-wider flex items-center gap-2">
+                  <span className="text-gold capitalize">{location.type}</span>
                   <span className="text-gray-200">•</span>
-                  <span className="truncate">{loc.city}</span>
+                  <span className="truncate">{location.city}</span>
                 </div>
               </div>
             </button>
@@ -313,19 +381,10 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
 
           {query.length >= 1 && results.length === 0 && !isLoading && (
             <div className="p-4 text-center">
-              <div className="inline-flex p-2.5 bg-gray-50 rounded-full mb-2">
-                <Search className="w-5 h-5 text-gray-200" />
-              </div>
-              <p className="text-sm text-gray-600 font-bold">
-                {requestError ? 'Suggestions are temporarily unavailable' : `No results for "${query}"`}
-              </p>
-              <p className="text-xs text-gray-400 mt-1">
-                {requestError ? 'You can still enter this location manually' : 'Check spelling or try a city name'}
-              </p>
-              <button 
-                onClick={handleManualInput}
-                className="mt-3 px-3 py-1.5 text-sm bg-gold text-white rounded-lg hover:bg-gold-dark transition-colors"
-              >
+              <div className="inline-flex p-2.5 bg-gray-50 rounded-full mb-2"><Search className="w-5 h-5 text-gray-200" /></div>
+              <p className="text-sm text-gray-600 font-bold">{requestError ? 'Suggestions are temporarily unavailable' : `No results for "${query}"`}</p>
+              <p className="text-xs text-gray-400 mt-1">{requestError ? 'You can still enter this location manually' : 'Check spelling or try a city name'}</p>
+              <button type="button" onClick={handleManualInput} className="mt-3 px-3 py-1.5 text-sm bg-gold text-white rounded-lg hover:bg-gold-dark transition-colors">
                 Use "{query}" as manual input
               </button>
             </div>
