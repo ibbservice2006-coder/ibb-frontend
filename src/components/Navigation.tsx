@@ -29,6 +29,7 @@ const languages = [
   { code: "hi", name: "हिन्दी" },
   { code: "fr", name: "Français" },
   { code: "es", name: "Español" },
+  { code: "my", name: "မြန်မာ" },
 ];
 
 const Navigation = () => {

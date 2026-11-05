@@ -447,6 +447,8 @@
     padding: 22px;
     background: var(--pricing-card-surface);
     box-shadow: none;
+    /* Keep desktop scaling in one animated property, not stacked with Tailwind's transform. */
+    transform: none;
     scale: 1;
     translate: 0 0;
     z-index: 0;
@@ -472,6 +474,7 @@
 
   /* Retain selection state while keeping Portal's original frame palette on every card. */
   .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div.border-2 {
+    scale: 1.05;
     z-index: 1;
   }
 

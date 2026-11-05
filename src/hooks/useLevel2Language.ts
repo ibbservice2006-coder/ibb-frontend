@@ -21,8 +21,9 @@ import {
 } from '@/lib/level2-language';
 import type { Language } from '@/contexts/LanguageContext';
 
-export function useLevel2Language() {
+export function useLevel2Language({ translateEnglish = false }: { translateEnglish?: boolean } = {}) {
   const snap = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const source = snap.translations ?? (translateEnglish ? snap.allTranslations?.en : null);
 
   // Trigger bootstrap after first paint (idempotent — only runs once)
   useEffect(() => {
@@ -36,7 +37,7 @@ export function useLevel2Language() {
    */
   const t = useCallback(
     (key: string, fallback: string): string => {
-      const tr = snap.translations;
+      const tr = source;
       if (!tr) return fallback;
 
       const parts = key.split('.');
@@ -50,7 +51,7 @@ export function useLevel2Language() {
       }
       return typeof value === 'string' ? value : fallback;
     },
-    [snap.translations]
+    [source]
   );
 
   return {

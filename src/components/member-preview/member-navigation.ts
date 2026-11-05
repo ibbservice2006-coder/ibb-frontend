@@ -12,7 +12,7 @@ const allowedReturnPaths = new Set([
   "/member-preview/shuttle/overview",
   "/member-preview/shuttle/balance",
 ]);
-const allowedReturnLocales = ["en", "th", "zh", "ja", "ko", "ru", "ar", "de", "fr", "es", "id", "hi", "vi"];
+const allowedReturnLocales = ["en", "th", "zh", "ja", "ko", "ru", "ar", "de", "fr", "es", "id", "hi", "vi", "my"];
 
 let hasCachedRaw = false;
 let cachedRaw: string | null = null;

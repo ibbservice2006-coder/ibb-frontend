@@ -1,10 +1,10 @@
 import { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react';
 import { translations } from '@/data/translations';
 
-export type Language = 'en' | 'th' | 'zh' | 'ru' | 'de' | 'ar' | 'id' | 'ko' | 'ja' | 'vi' | 'hi' | 'fr' | 'es';
+export type Language = 'en' | 'th' | 'zh' | 'ru' | 'de' | 'ar' | 'id' | 'ko' | 'ja' | 'vi' | 'hi' | 'fr' | 'es' | 'my';
 
-// Canonical order: en, th, zh, ja, ko, ru, ar, de, fr, es, id, hi, vi
-export const VALID_LANGUAGES: Language[] = ['en', 'th', 'zh', 'ja', 'ko', 'ru', 'ar', 'de', 'fr', 'es', 'id', 'hi', 'vi'];
+// Canonical order: en, th, zh, ja, ko, ru, ar, de, fr, es, id, hi, vi, my
+export const VALID_LANGUAGES: Language[] = ['en', 'th', 'zh', 'ja', 'ko', 'ru', 'ar', 'de', 'fr', 'es', 'id', 'hi', 'vi', 'my'];
 const STORAGE_KEY = 'ibb-language';
 
 interface LanguageContextType {

@@ -289,7 +289,7 @@ const BookingSection = () => {
                     <PopoverContent align="start" className="w-[min(100vw-2rem,24rem)] p-3">
                       <div className="grid grid-cols-[1fr_auto_1fr_auto_0.8fr] items-start gap-2">
                         <div>
-                          <p className="mb-2 text-center text-xs text-muted-foreground">Hour</p>
+                          <p className="mb-2 text-center text-xs text-muted-foreground">{t('booking.hour', 'Hour')}</p>
                           <div className="h-52 overflow-y-auto overscroll-contain rounded-md border bg-background p-1">
                             {pickupHours.map((hour) => (
                               <button
@@ -305,7 +305,7 @@ const BookingSection = () => {
                         </div>
                         <span className="pt-9 text-lg text-muted-foreground" aria-hidden="true">:</span>
                         <div>
-                          <p className="mb-2 text-center text-xs text-muted-foreground">Minute</p>
+                          <p className="mb-2 text-center text-xs text-muted-foreground">{t('booking.minute', 'Minute')}</p>
                           <div className="h-52 overflow-y-auto overscroll-contain rounded-md border bg-background p-1">
                             {pickupMinutes.map((minute) => (
                               <button

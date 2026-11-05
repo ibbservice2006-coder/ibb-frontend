@@ -1,4 +1,5 @@
 import { PriceRow } from "@/data/pricingDataComplete";
+import type { PricingTranslate } from "@/lib/pricing-localization";
 import {
   Accordion,
   AccordionContent,
@@ -9,12 +10,13 @@ import { MapPin, ChevronRight, LucideIcon } from "lucide-react";
 
 // ============================================
 // StaticPricingAccordion - Level 1: Zero-dependency
-// No useLanguage, no providers — English only
+// No language provider: translated copy is passed from the Pricing page.
 // ============================================
 
 interface StaticPricingAccordionProps {
   data: PriceRow[];
   title: string;
+  t: PricingTranslate;
   vehicleType: "car" | "van" | "bus";
   formatPrice: (price: number | string) => string;
   icon?: LucideIcon;
@@ -44,31 +46,31 @@ const vehicleColors = {
   },
 };
 
-const StaticPricingAccordion = ({ data, title, vehicleType, formatPrice, icon: SectionIcon }: StaticPricingAccordionProps) => {
+const StaticPricingAccordion = ({ data, title, t, vehicleType, formatPrice, icon: SectionIcon }: StaticPricingAccordionProps) => {
   const colors = vehicleColors[vehicleType];
 
   const getPriceItems = (row: PriceRow) => {
     if (vehicleType === "car") {
       return [
-        { label: "Standard", value: row.standard, category: "Car & SUV" },
-        { label: "Executive", value: row.executive, category: "Car & SUV" },
-        { label: "Family", value: row.family, category: "Car & SUV" },
-        { label: "Electric", value: row.electric, category: "Car & SUV" },
-        { label: "Premium", value: row.premium, category: "Limousine" },
-        { label: "Luxury", value: row.luxury, category: "Limousine" },
+        { label: t('pricingPage.standard', 'Standard'), value: row.standard, category: t('pricingPage.carSuv', 'Car & SUV') },
+        { label: t('pricingPage.executive', 'Executive'), value: row.executive, category: t('pricingPage.carSuv', 'Car & SUV') },
+        { label: t('pricingPage.family', 'Family'), value: row.family, category: t('pricingPage.carSuv', 'Car & SUV') },
+        { label: t('pricingPage.electric', 'Electric'), value: row.electric, category: t('pricingPage.carSuv', 'Car & SUV') },
+        { label: t('pricingPage.premium', 'Premium'), value: row.premium, category: t('pricingPage.limousine', 'Limousine') },
+        { label: t('pricingPage.luxury', 'Luxury'), value: row.luxury, category: t('pricingPage.limousine', 'Limousine') },
       ];
     } else if (vehicleType === "van") {
       return [
-        { label: "Standard", value: row.standard, category: "MPV/Van" },
-        { label: "Executive", value: row.executive, category: "MPV/Van" },
-        { label: "Premium", value: row.family, category: "MPV/Van" },
-        { label: "Luxury", value: row.electric, category: "MPV/Van" },
+        { label: t('pricingPage.standard', 'Standard'), value: row.standard, category: t('pricingPage.mpvVan', 'MPV/Van') },
+        { label: t('pricingPage.executive', 'Executive'), value: row.executive, category: t('pricingPage.mpvVan', 'MPV/Van') },
+        { label: t('pricingPage.premium', 'Premium'), value: row.family, category: t('pricingPage.mpvVan', 'MPV/Van') },
+        { label: t('pricingPage.luxury', 'Luxury'), value: row.electric, category: t('pricingPage.mpvVan', 'MPV/Van') },
       ];
     } else {
       return [
-        { label: "Minibus", value: row.standard, category: "BUS/Coach" },
-        { label: "Mid-sized", value: row.executive, category: "BUS/Coach" },
-        { label: "Group Bus", value: row.family, category: "BUS/Coach" },
+        { label: t('pricingPage.minibus', 'Minibus'), value: row.standard, category: t('pricingPage.busCoach', 'BUS/Coach') },
+        { label: t('pricingPage.midSized', 'Mid-sized'), value: row.executive, category: t('pricingPage.busCoach', 'BUS/Coach') },
+        { label: t('pricingPage.groupBus', 'Group Bus'), value: row.family, category: t('pricingPage.busCoach', 'BUS/Coach') },
       ];
     }
   };

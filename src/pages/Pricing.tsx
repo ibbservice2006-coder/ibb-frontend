@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useLevel2Language } from "@/hooks/useLevel2Language";
 import { useCurrencyConverter } from "@/hooks/useCurrencyConverter";
+import { localizePricingRow, pricingTableTitle } from "@/lib/pricing-localization";
 
 // Error Boundary for Pricing Table
 class PricingErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: Error | null }> {
@@ -61,16 +62,16 @@ const routeIcons: Record<string, LucideIcon> = {
 };
 
 // Static table renderers with dynamic price formatting
-const renderCarTable = (data: PriceRow[], tableId: string, t: (key: string, fb: string) => string, formatPrice: (price: number | string) => string) => (
+const renderCarTable = (data: PriceRow[], title: string, t: (key: string, fb: string) => string, formatPrice: (price: number | string) => string) => (
   <div className="mb-6">
     <p style={{ fontSize: '23px', fontWeight: 'bold', color: '#bfa15b' }} className="mb-2">
-      {allTables.find(t2 => t2.id === tableId)?.title || tableId}
+      {title}
     </p>
     <table className="w-full" style={{ borderCollapse: 'collapse', fontFamily: 'Open Sans, sans-serif' }}>
       <thead>
         <tr>
           <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.distance', 'Distance')}</th>
-          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.destination', 'Destination')}</th>
+          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.route', 'Route')}</th>
           <th colSpan={4} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.carSuv', 'Car & SUV')}</th>
           <th colSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.limousine', 'Limousine')}</th>
         </tr>
@@ -100,16 +101,16 @@ const renderCarTable = (data: PriceRow[], tableId: string, t: (key: string, fb: 
   </div>
 );
 
-const renderVanTable = (data: PriceRow[], tableId: string, t: (key: string, fb: string) => string, formatPrice: (price: number | string) => string) => (
+const renderVanTable = (data: PriceRow[], title: string, t: (key: string, fb: string) => string, formatPrice: (price: number | string) => string) => (
   <div className="mb-6">
     <p style={{ fontSize: '23px', fontWeight: 'bold', color: '#bfa15b' }} className="mb-2">
-      {allTables.find(t2 => t2.id === tableId)?.title || tableId}
+      {title}
     </p>
     <table className="w-full" style={{ borderCollapse: 'collapse', fontFamily: 'Open Sans, sans-serif' }}>
       <thead>
         <tr>
           <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.distance', 'Distance')}</th>
-          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.destination', 'Destination')}</th>
+          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.route', 'Route')}</th>
           <th colSpan={4} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.mpvVan', 'MPV/Van')}</th>
         </tr>
         <tr>
@@ -136,16 +137,16 @@ const renderVanTable = (data: PriceRow[], tableId: string, t: (key: string, fb: 
   </div>
 );
 
-const renderBusTable = (data: PriceRow[], tableId: string, t: (key: string, fb: string) => string, formatPrice: (price: number | string) => string) => (
+const renderBusTable = (data: PriceRow[], title: string, t: (key: string, fb: string) => string, formatPrice: (price: number | string) => string) => (
   <div className="mb-6">
     <p style={{ fontSize: '23px', fontWeight: 'bold', color: '#bfa15b' }} className="mb-2">
-      {allTables.find(t2 => t2.id === tableId)?.title || tableId}
+      {title}
     </p>
     <table className="w-full" style={{ borderCollapse: 'collapse', fontFamily: 'Open Sans, sans-serif' }}>
       <thead>
         <tr>
           <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.distance', 'Distance')}</th>
-          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.destination', 'Destination')}</th>
+          <th rowSpan={2} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.route', 'Route')}</th>
           <th colSpan={3} style={{ border: '2.3px solid #87CEEB', backgroundColor: '#ffffff', color: '#0e3b30', fontSize: '1.2em', padding: '5px', textAlign: 'center' }}>{t('pricingPage.busCoach', 'BUS/Coach')}</th>
         </tr>
         <tr>
@@ -171,20 +172,23 @@ const renderBusTable = (data: PriceRow[], tableId: string, t: (key: string, fb: 
   </div>
 );
 
-const PricingTables = memo(({ vehicle, t, formatPrice }: {
+const PricingTables = memo(({ vehicle, language, t, formatPrice }: {
   vehicle: VehicleType;
+  language: string;
   t: (key: string, fallback: string) => string;
   formatPrice: (price: number | string) => string;
 }) => (
   <div className="space-y-6">
     {allTables.map((table) => {
-      const data = table.data[vehicle];
+      const title = pricingTableTitle(table.id, t);
+      const data = table.data[vehicle].map((row) => localizePricingRow(row, table.id, t, language));
       return (
         <div key={table.id}>
           <div className="xl:hidden">
             <StaticPricingAccordion
               data={data}
-              title={table.title}
+              title={title}
+              t={t}
               vehicleType={vehicle}
               formatPrice={formatPrice}
               icon={routeIcons[table.id]}
@@ -192,10 +196,10 @@ const PricingTables = memo(({ vehicle, t, formatPrice }: {
           </div>
           <div className="hidden xl:block">
             {vehicle === "car"
-              ? renderCarTable(data, table.id, t, formatPrice)
+              ? renderCarTable(data, title, t, formatPrice)
               : vehicle === "van"
-                ? renderVanTable(data, table.id, t, formatPrice)
-                : renderBusTable(data, table.id, t, formatPrice)}
+                ? renderVanTable(data, title, t, formatPrice)
+                : renderBusTable(data, title, t, formatPrice)}
           </div>
         </div>
       );
@@ -206,7 +210,7 @@ const PricingTables = memo(({ vehicle, t, formatPrice }: {
 const PricingPage = () => {
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleType>("car");
   const [tableVehicle, setTableVehicle] = useState<VehicleType>("car");
-  const { t, language } = useLevel2Language();
+  const { t, language } = useLevel2Language({ translateEnglish: true });
   const { selectedCurrency, setSelectedCurrency, convertPrice } = useCurrencyConverter();
 
   // Dynamic price formatter — uses currency engine (L3)
@@ -264,7 +268,7 @@ const PricingPage = () => {
       <section style={{ backgroundColor: '#0e3b30' }} className="flex-1 px-3 py-3 sm:px-5 sm:py-3">
         <div className="max-w-[1200px] mx-auto">
           <h2 className="text-center text-xl sm:text-2xl md:text-[2rem] text-[#bfa15b] mb-3 sm:mb-4">
-            IBB Shuttle Service Price List
+            {t('pricingPage.pageTitle', 'IBB Shuttle Service Price List')}
           </h2>
 
           {/* Filters */}
@@ -332,7 +336,7 @@ const PricingPage = () => {
 
           {/* All Tables */}
           <PricingErrorBoundary>
-            <PricingTables vehicle={tableVehicle} t={t} formatPrice={formatPrice} />
+            <PricingTables vehicle={tableVehicle} language={language} t={t} formatPrice={formatPrice} />
           </PricingErrorBoundary>
         </div>
       </section>

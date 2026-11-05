@@ -14,7 +14,7 @@ import { memberUrl } from "@/components/member-preview/ui";
 // L2: Silent language swap after bootstrap
 // ============================================
 
-const VALID_LANGS: Language[] = ['en', 'th', 'zh', 'ja', 'ko', 'ru', 'ar', 'de', 'fr', 'es', 'id', 'hi', 'vi'];
+const VALID_LANGS: Language[] = ['en', 'th', 'zh', 'ja', 'ko', 'ru', 'ar', 'de', 'fr', 'es', 'id', 'hi', 'vi', 'my'];
 
 interface PublicNavigationProps {
   memberContext?: {
@@ -33,7 +33,7 @@ const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const uiSession = useMemberSession();
-  const isShuttlePublicPage = ["/landing", "/shuttle", "/pricing"].includes(location.pathname) || /^\/(en|th|zh|ja|ko|ru|ar|de|fr|es|id|hi|vi)\/shuttle$/.test(location.pathname);
+  const isShuttlePublicPage = ["/landing", "/shuttle", "/pricing"].includes(location.pathname) || /^\/(en|th|zh|ja|ko|ru|ar|de|fr|es|id|hi|vi|my)\/shuttle$/.test(location.pathname);
   const navigationContext = memberContext ?? (isShuttlePublicPage ? {
     signedIn: !!uiSession,
     loginHref: memberLoginHref(`${location.pathname}${location.search}${location.hash}`),
@@ -78,7 +78,7 @@ const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
 
     // If on /:lang/shuttle, update the URL lang segment too
     const langShuttleMatch = location.pathname.match(
-      /^\/(en|th|zh|ja|ko|ru|ar|de|fr|es|id|hi|vi)\/(shuttle)$/
+      /^\/(en|th|zh|ja|ko|ru|ar|de|fr|es|id|hi|vi|my)\/(shuttle)$/
     );
     if (langShuttleMatch && VALID_LANGS.includes(newLang)) {
       setLanguage(newLang);

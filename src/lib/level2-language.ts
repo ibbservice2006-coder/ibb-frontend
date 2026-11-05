@@ -14,12 +14,12 @@
 import type { Language } from '@/contexts/LanguageContext';
 
 const STORAGE_KEY = 'ibb-language';
-const VALID_LANGS: Language[] = ['en', 'th', 'zh', 'ja', 'ko', 'ru', 'ar', 'de', 'fr', 'es', 'id', 'hi', 'vi'];
+const VALID_LANGS: Language[] = ['en', 'th', 'zh', 'ja', 'ko', 'ru', 'ar', 'de', 'fr', 'es', 'id', 'hi', 'vi', 'my'];
 
 const LANG_LABELS: Record<Language, string> = {
   en: 'English', th: 'ไทย', zh: '中文', ja: '日本語', ko: '한국어',
   ru: 'Русский', ar: 'العربية', de: 'Deutsch', fr: 'Français',
-  es: 'Español', id: 'Bahasa', hi: 'हिन्दी', vi: 'Tiếng Việt',
+  es: 'Español', id: 'Bahasa', hi: 'हिन्दी', vi: 'Tiếng Việt', my: 'မြန်မာ',
 };
 
 export const ALL_LANGUAGES = VALID_LANGS.map(code => ({ code, label: LANG_LABELS[code] }));
@@ -80,12 +80,14 @@ function detectLanguage(): Language {
   return 'en';
 }
 
-let booted = false;
+let bootstrapPromise: Promise<void> | null = null;
 
-export async function bootstrap(): Promise<void> {
-  if (booted) return;
-  booted = true;
+export function bootstrap(): Promise<void> {
+  if (!bootstrapPromise) bootstrapPromise = loadTranslations();
+  return bootstrapPromise;
+}
 
+async function loadTranslations(): Promise<void> {
   const detectedLang = detectLanguage();
 
   // Dynamic import — creates a separate chunk, not in initial bundle

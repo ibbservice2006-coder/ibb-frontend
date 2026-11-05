@@ -17,6 +17,7 @@ const LANGUAGE_LABELS: Record<Language, string> = {
   id: "Bahasa",
   hi: "हिन्दी",
   vi: "Tiếng Việt",
+  my: "မြန်မာ",
 };
 
 const LanguageSwitcher = () => {
