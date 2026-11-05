@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +8,7 @@ import { Calendar, MapPin, Users, Car, Clock, Loader2 } from "lucide-react";
 import { useLevel2Language } from "@/hooks/useLevel2Language";
 import { supabase } from "@/integrations/ibb/client";
 import BookingSuccessModal from "@/components/booking/BookingSuccessModal";
+import BookingConfirmationDialog, { type BookingReviewData } from "@/components/booking/BookingConfirmationDialog";
 import LocationAutocomplete from "@/components/booking/LocationAutocomplete";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "sonner";
@@ -32,7 +33,7 @@ const BookingSection = () => {
     { value: "bus", label: t('booking.busOption', 'Bus (11+ passengers)') },
   ];
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<BookingReviewData>({
     pickupLocation: "",
     dropoffLocation: "",
     date: "",
@@ -48,6 +49,10 @@ const BookingSection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [pendingBooking, setPendingBooking] = useState<BookingReviewData | null>(null);
+  const submissionLock = useRef(false);
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
   const [bookingResult, setBookingResult] = useState<{
     bookingNumber: string;
     amount: number;
@@ -110,8 +115,10 @@ const BookingSection = () => {
     handleChange(field, selection.display_name ?? selection.raw_input ?? "");
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (submissionLock.current || isConfirmationOpen || !e.currentTarget.reportValidity()) return;
 
     if (!formData.time) {
       toast.error(t('booking.selectTime', 'Please select a pickup time'));
@@ -124,23 +131,46 @@ const BookingSection = () => {
       return;
     }
 
+    const pickupDatetime = new Date(`${formData.date}T${formData.time}:00`);
+    if (!Number.isFinite(pickupDatetime.getTime())) {
+      toast.error(t('booking.reviewDateInvalid', 'Please select a valid pickup date and time.'));
+      return;
+    }
+
+    // Review a snapshot first; Submit must not create a booking yet.
+    setPendingBooking({ ...formData });
+    setIsConfirmationOpen(true);
+  };
+
+  const handleConfirmationOpenChange = (open: boolean) => {
+    if (submissionLock.current) return;
+    setIsConfirmationOpen(open);
+    if (!open) setPendingBooking(null);
+  };
+
+  const handleConfirmBooking = async () => {
+    if (submissionLock.current || !isConfirmationOpen || !pendingBooking) return;
+
+    // Lock synchronously so rapid clicks cannot submit the same review twice.
+    submissionLock.current = true;
+    const submittedData = pendingBooking;
     setIsSubmitting(true);
 
     try {
       // Combine date + time into ISO datetime
-      const pickupDatetime = new Date(`${formData.date}T${formData.time}:00`).toISOString();
+      const pickupDatetime = new Date(`${submittedData.date}T${submittedData.time}:00`).toISOString();
 
       const body = {
-        pickupLocation:  formData.pickupLocation,
-        dropoffLocation: formData.dropoffLocation,
+        pickupLocation:  submittedData.pickupLocation,
+        dropoffLocation: submittedData.dropoffLocation,
         pickupDatetime,
-        vehicleCategory: formData.vehicleType as "car" | "van" | "bus",
-        passengerCount:  parseInt(formData.passengers) || 1,
-        specialRequests: formData.specialRequests || undefined,
+        vehicleCategory: submittedData.vehicleType as "car" | "van" | "bus",
+        passengerCount:  parseInt(submittedData.passengers) || 1,
+        specialRequests: submittedData.specialRequests || undefined,
         customer: {
-          fullName: formData.name,
-          phone:    formData.phone,
-          email:    formData.email || undefined,
+          fullName: submittedData.name,
+          phone:    submittedData.phone,
+          email:    submittedData.email || undefined,
         },
       };
 
@@ -154,20 +184,24 @@ const BookingSection = () => {
         const errData = await res.json().catch(() => ({}));
         console.error("Booking API error:", res.status, errData);
         toast.error(t('booking.bookingFailed', 'Failed to create booking. Please try again.'));
-        setIsSubmitting(false);
         return;
       }
 
       const booking = await res.json() as { publicId: string; status: string };
+      if (typeof booking.publicId !== "string" || !booking.publicId.trim()) {
+        throw new Error("Booking response is missing a booking number");
+      }
 
       // Show success modal with booking details
       setBookingResult({
         bookingNumber: booking.publicId,
         amount: 0,
         currency: "THB",
-        guestEmail: formData.email,
-        vehicleType: formData.vehicleType as "car" | "van" | "bus",
+        guestEmail: submittedData.email,
+        vehicleType: submittedData.vehicleType as "car" | "van" | "bus",
       });
+      setIsConfirmationOpen(false);
+      setPendingBooking(null);
       setShowSuccessModal(true);
 
       // Reset form
@@ -188,6 +222,7 @@ const BookingSection = () => {
       console.error("Booking submission error:", err);
       toast.error(t('booking.bookingFailed', 'Failed to create booking. Please try again.'));
     } finally {
+      submissionLock.current = false;
       setIsSubmitting(false);
     }
   };
@@ -447,7 +482,7 @@ const BookingSection = () => {
               </div>
 
               <div className="mt-8 text-center">
-                <Button type="submit" variant="cta" size="lg" className="min-w-[200px]" disabled={isSubmitting}>
+                <Button ref={submitButtonRef} type="submit" variant="cta" size="lg" className="min-w-[200px]" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -462,6 +497,15 @@ const BookingSection = () => {
           </div>
         </div>
       </section>
+
+      <BookingConfirmationDialog
+        open={isConfirmationOpen}
+        details={pendingBooking}
+        isSubmitting={isSubmitting}
+        returnFocusRef={submitButtonRef}
+        onOpenChange={handleConfirmationOpenChange}
+        onConfirm={handleConfirmBooking}
+      />
 
       {/* Booking Success Modal */}
       {bookingResult && (

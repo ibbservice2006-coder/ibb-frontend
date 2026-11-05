@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLevel2Language } from "@/hooks/useLevel2Language";
@@ -192,9 +193,9 @@ const Pricing = () => {
         </div>
 
         <div className="text-center mt-6">
-          <a href="/pricing" className="text-primary hover:text-primary/80 text-sm font-medium underline underline-offset-4 transition-colors">
+          <Link to="/pricing" className="text-primary hover:text-primary/80 text-sm font-medium underline underline-offset-4 transition-colors">
             {t('pricing.viewFullPricing', 'View Full Price List →')}
-          </a>
+          </Link>
         </div>
 
         <p className="text-center text-muted-foreground text-sm mt-4">
