@@ -9,9 +9,13 @@ import { useLevel2Language } from "@/hooks/useLevel2Language";
 import { supabase } from "@/integrations/ibb/client";
 import BookingSuccessModal from "@/components/booking/BookingSuccessModal";
 import LocationAutocomplete from "@/components/booking/LocationAutocomplete";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "sonner";
 
 const IBB_BOOKING_API = "https://ibb-booking-api.ibb-service2006.workers.dev";
+
+const pickupHours = Array.from({ length: 24 }, (_, hour) => String(hour).padStart(2, "0"));
+const pickupMinutes = Array.from({ length: 60 }, (_, minute) => String(minute).padStart(2, "0"));
 
 /**
  * Level 4B — BookingSection with backend integration
@@ -42,6 +46,7 @@ const BookingSection = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [bookingResult, setBookingResult] = useState<{
     bookingNumber: string;
@@ -107,6 +112,11 @@ const BookingSection = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.time) {
+      toast.error(t('booking.selectTime', 'Please select a pickup time'));
+      return;
+    }
 
     // Validate required fields
     if (!formData.vehicleType) {
@@ -184,6 +194,17 @@ const BookingSection = () => {
 
   // Set min date to today
   const today = new Date().toISOString().split("T")[0];
+  const [selectedHour = "", selectedMinute = ""] = formData.time.split(":");
+  const selectedMeridiem = selectedHour && Number(selectedHour) >= 12 ? "PM" : "AM";
+  const displayedTime = selectedHour && selectedMinute
+    ? `${selectedHour}:${selectedMinute} ${selectedMeridiem}`
+    : "--:-- --";
+
+  const handleTimePartChange = (part: "hour" | "minute", value: string) => {
+    const hour = part === "hour" ? value : selectedHour || "00";
+    const minute = part === "minute" ? value : selectedMinute || "00";
+    handleChange("time", `${hour}:${minute}`);
+  };
 
   return (
     <>
@@ -230,7 +251,7 @@ const BookingSection = () => {
                 <div className="space-y-2">
                   <Label htmlFor="date" className="flex items-center gap-2 text-foreground">
                     <Calendar className="w-4 h-4 text-primary" />
-                    {t('booking.travelDate', 'Travel Date')}
+                    {t('booking.pickupDate', 'Pickup Date')}
                   </Label>
                   <Input
                     id="date"
@@ -248,14 +269,77 @@ const BookingSection = () => {
                     <Clock className="w-4 h-4 text-primary" />
                     {t('booking.pickupTime', 'Pickup Time')}
                   </Label>
-                  <Input
-                    id="time"
-                    type="time"
-                    value={formData.time}
-                    onChange={(e) => handleChange("time", e.target.value)}
-                    required
-                    disabled={isSubmitting}
-                  />
+                  <Popover open={isTimePickerOpen} onOpenChange={setIsTimePickerOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        id="time"
+                        type="button"
+                        disabled={isSubmitting}
+                        aria-label={t('booking.pickupTime', 'Pickup Time')}
+                        aria-haspopup="dialog"
+                        aria-expanded={isTimePickerOpen}
+                        className="flex h-10 w-full items-center justify-start gap-5 rounded-md border border-input bg-background px-3 py-2 text-sm font-normal text-left shadow-sm transition-colors focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <span className={selectedHour ? "text-foreground" : "text-muted-foreground"}>
+                          {displayedTime}
+                        </span>
+                        <Clock className="h-4 w-4 text-muted-foreground" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent align="start" className="w-[min(100vw-2rem,24rem)] p-3">
+                      <div className="grid grid-cols-[1fr_auto_1fr_auto_0.8fr] items-start gap-2">
+                        <div>
+                          <p className="mb-2 text-center text-xs text-muted-foreground">Hour</p>
+                          <div className="h-52 overflow-y-auto overscroll-contain rounded-md border bg-background p-1">
+                            {pickupHours.map((hour) => (
+                              <button
+                                key={hour}
+                                type="button"
+                                onClick={() => handleTimePartChange("hour", hour)}
+                                className={`w-full rounded px-2 py-2 text-center text-sm transition-colors ${selectedHour === hour ? "bg-primary text-primary-foreground" : "hover:bg-muted"}`}
+                              >
+                                {hour}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <span className="pt-9 text-lg text-muted-foreground" aria-hidden="true">:</span>
+                        <div>
+                          <p className="mb-2 text-center text-xs text-muted-foreground">Minute</p>
+                          <div className="h-52 overflow-y-auto overscroll-contain rounded-md border bg-background p-1">
+                            {pickupMinutes.map((minute) => (
+                              <button
+                                key={minute}
+                                type="button"
+                                onClick={() => {
+                                  handleTimePartChange("minute", minute);
+                                  setIsTimePickerOpen(false);
+                                }}
+                                className={`w-full rounded px-2 py-2 text-center text-sm transition-colors ${selectedMinute === minute ? "bg-primary text-primary-foreground" : "hover:bg-muted"}`}
+                              >
+                                {minute}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <span className="pt-9 text-lg text-muted-foreground" aria-hidden="true"> </span>
+                        <div>
+                          <p className="mb-2 text-center text-xs text-muted-foreground">&nbsp;</p>
+                          <div className="h-52 overflow-y-auto overscroll-contain rounded-md border bg-background p-1">
+                            {["AM", "PM"].map((period) => (
+                              <div
+                                key={period}
+                                aria-current={selectedMeridiem === period ? "true" : undefined}
+                                className={`rounded px-2 py-2 text-center text-sm ${selectedMeridiem === period ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
+                              >
+                                {period}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 <div className="space-y-2">
