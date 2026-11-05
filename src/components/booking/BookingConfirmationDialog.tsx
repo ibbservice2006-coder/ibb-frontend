@@ -76,8 +76,8 @@ const BookingConfirmationDialog = ({
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent
-        className="flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-2xl flex-col overflow-hidden rounded-lg border-[6px] border-transparent bg-[#162032] p-[19px] text-white"
-        style={{ background: "linear-gradient(145deg, #1e2b42 0%, #162032 48%, #0f1623 100%) padding-box, linear-gradient(to bottom right, #bf953f, #fcf6ba, #b38728, #aa771c) border-box" }}
+        className="flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-2xl flex-col overflow-hidden rounded-lg border-[6px] border-transparent bg-[#0e3b30] p-[19px] text-white"
+        style={{ background: "linear-gradient(145deg, #164237 0%, #10382e 48%, #081f1b 100%) padding-box, linear-gradient(to bottom right, #bf953f, #fcf6ba, #b38728, #aa771c) border-box" }}
         dir={language === "ar" ? "rtl" : "ltr"}
         aria-busy={isSubmitting}
         onOpenAutoFocus={(event) => {
@@ -107,7 +107,7 @@ const BookingConfirmationDialog = ({
               key={row.key}
               data-booking-review-field={row.key}
               className={`space-y-1 rounded-lg border-2 border-transparent p-[11px] ${row.fullWidth ? "sm:col-span-2" : ""}`}
-              style={{ background: "linear-gradient(to bottom right, #1e2b42, #162032, #0f1623) padding-box, linear-gradient(to bottom right, #bf953f, #fcf6ba, #b38728, #aa771c) border-box" }}
+              style={{ background: "linear-gradient(to bottom right, #164237, #10382e, #081f1b) padding-box, linear-gradient(to bottom right, #bf953f, #fcf6ba, #b38728, #aa771c) border-box" }}
             >
               <dt className="text-sm text-white">{row.label}</dt>
               <dd className="whitespace-pre-wrap break-words text-sm font-medium text-white [overflow-wrap:anywhere]">
@@ -122,13 +122,13 @@ const BookingConfirmationDialog = ({
             ref={editButtonRef}
             type="button"
             variant="outline"
-            className="border-[#bf953f]/70 bg-transparent text-[#fcf6ba] hover:bg-[#bf953f]/10 hover:text-[#fcf6ba] focus-visible:ring-[#fcf6ba]/70 ring-offset-[#162032]"
+            className="border-[#bf953f]/70 bg-transparent text-[#fcf6ba] hover:bg-[#bf953f]/10 hover:text-[#fcf6ba] focus-visible:ring-[#fcf6ba]/70 ring-offset-[#10382e]"
             disabled={isSubmitting}
             onClick={() => onOpenChange(false)}
           >
             {t("booking.reviewEdit", "Back to edit")}
           </Button>
-          <Button type="button" variant="cta" className="border-[#bf953f]/70 bg-[#bf953f] bg-gradient-to-br from-[#bf953f] via-[#fcf6ba] to-[#aa771c] text-[#162032] hover:border-[#fcf6ba] hover:from-[#cfad61] hover:via-[#fffbd6] hover:to-[#bf953f] focus-visible:ring-[#fcf6ba]/70 ring-offset-[#162032]" disabled={isSubmitting} onClick={onConfirm}>
+          <Button type="button" variant="cta" className="border-[#bf953f]/70 bg-[#bf953f] bg-gradient-to-br from-[#bf953f] via-[#fcf6ba] to-[#aa771c] text-[#10382e] hover:border-[#fcf6ba] hover:from-[#cfad61] hover:via-[#fffbd6] hover:to-[#bf953f] focus-visible:ring-[#fcf6ba]/70 ring-offset-[#10382e]" disabled={isSubmitting} onClick={onConfirm}>
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin text-[#78551c]" aria-hidden="true" />
