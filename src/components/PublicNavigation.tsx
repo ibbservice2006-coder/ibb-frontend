@@ -59,6 +59,10 @@ const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
     } : link);
   const accountHref = navigationContext ? navigationContext.signedIn ? navigationContext.accountHref : navigationContext.loginHref : "/auth";
   const accountLabel = navigationContext?.signedIn ? language === "th" ? "บัญชี IBB ของฉัน" : "My IBB account" : `${t('nav.login', 'Login')} / ${t('nav.signup', 'Sign Up')}`;
+  const desktopNavLinks = navLinks.flatMap(link => link.href === "/pricing" ? [
+    link,
+    { name: t('nav.bookingGuide', 'Booking Guide'), href: "booking-guide-menu", isRoute: false },
+  ] : [link]);
 
   const handleNavigationClick = (href: string) => {
     if (href === "/landing" || href === "/pricing" || href === navigationContext?.shuttleHref) {
@@ -117,9 +121,17 @@ const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
           <div></div>
 
           <ul className="flex items-center justify-center gap-8 lg:gap-10">
-            {navLinks.map((link) => (
+            {desktopNavLinks.map((link) => (
               <li key={link.href}>
-                {link.isRoute ? (
+                {link.href === "booking-guide-menu" ? (
+                  <button
+                    type="button"
+                    aria-disabled="true"
+                    className="text-secondary-foreground hover:text-secondary-foreground/80 text-sm lg:text-[16.5px] transition-colors hover:underline underline-offset-4"
+                  >
+                    {link.name}
+                  </button>
+                ) : link.isRoute ? (
                   <Link
                     to={link.href}
                     onClick={() => handleNavigationClick(link.href)}
@@ -174,9 +186,17 @@ const PublicNavigation = ({ memberContext }: PublicNavigationProps) => {
             )}
           >
             <ul className="flex flex-col gap-2">
-              {navLinks.map((link) => (
+              {desktopNavLinks.map((link) => (
                 <li key={link.href}>
-                  {link.isRoute ? (
+                  {link.href === "booking-guide-menu" ? (
+                    <button
+                      type="button"
+                      aria-disabled="true"
+                      className="block py-2 text-secondary-foreground hover:text-secondary-foreground/80 transition-colors"
+                    >
+                      {link.name}
+                    </button>
+                  ) : link.isRoute ? (
                     <Link
                       to={link.href}
                       onClick={() => {

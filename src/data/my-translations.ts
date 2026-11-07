@@ -5,6 +5,7 @@ export const myTranslations = {
     about: "အကြောင်း",
     services: "ဝန်ဆောင်မှုများ",
     pricing: "ဈေးနှုန်းများ",
+    bookingGuide: "ကြိုတင်မှာယူမှု လမ်းညွှန်",
     booking: "ကြိုတင်မှာယူရန်",
     balancePayments: "လက်ကျန်ငွေနှင့် ငွေပေးချေမှုများ",
     contact: "ဆက်သွယ်ရန်",
