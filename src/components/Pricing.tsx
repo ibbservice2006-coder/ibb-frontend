@@ -111,8 +111,8 @@ const Pricing = ({ selectedVehicle, onVehicleChange, children }: PricingProps) =
 
       {children}
 
-      <div className="container mx-auto px-4 pb-16 md:pb-20">
-        <div className="flex justify-center items-center gap-2 mb-8">
+      <div className="container mx-auto px-4 pb-16 md:pb-20" style={{ transform: "translateY(80px)" }}>
+        <div className="flex justify-center items-center gap-2 mb-8" style={{ transform: "translateY(-20px)" }}>
           <span className="text-sm text-muted-foreground">{t('pricingPage.currency', 'Currency')}:</span>
           <select
             value={selectedCurrency}

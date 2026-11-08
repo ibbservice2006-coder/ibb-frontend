@@ -78,6 +78,7 @@ const Features = ({ compact = false, vehicleType = "car" }: FeaturesProps) => {
 
   const displayedFeatures = compact ? vehicleCardsByType[vehicleType] : features;
   const compactColumns = vehicleType === "car" ? "md:grid-cols-3" : "md:grid-cols-2";
+  const compactCardWidth = vehicleType === "van" ? "w-[95%]" : "w-[92%]";
 
   return (
     <section className="bg-secondary pt-6 md:pt-8 pb-12 md:pb-16">
@@ -89,7 +90,7 @@ const Features = ({ compact = false, vehicleType = "car" }: FeaturesProps) => {
           {displayedFeatures.map((feature, index) => (
             <div
               key={`${feature.title}-${index}`}
-              className={`bg-secondary rounded-lg text-center group ${compact ? "vehicle-coverage-card border-2 w-[90%] justify-self-center p-3 !border-[#c9a55b] transition-[border-color,box-shadow] hover:!border-[#f5e6a8]" : "border border-primary-foreground/20 transition-colors hover:border-primary-foreground/40 p-5"}`}
+              className={`bg-secondary rounded-lg text-center group ${compact ? `vehicle-coverage-card border-2 ${compactCardWidth} justify-self-center p-3 !border-[#c9a55b] transition-[border-color,box-shadow] hover:!border-[#f5e6a8]` : "border border-primary-foreground/20 transition-colors hover:border-primary-foreground/40 p-5"}`}
             >
               <div className="relative overflow-hidden rounded-lg">
                 <img
