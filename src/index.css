@@ -186,6 +186,10 @@
     color: #0e3b30;
   }
 
+  .luxury-preview .vehicle-capacity-title {
+    color: #ceb781 !important;
+  }
+
   .luxury-preview > nav select,
   .luxury-preview > nav select option,
   .luxury-preview > nav svg.text-secondary-foreground {
@@ -442,7 +446,7 @@
   }
 
   /* Landing pricing: Portal frame trial; original Portal styles and markup stay untouched. */
-  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div {
+  .luxury-preview:has(> main > section#home) .pricing-cards-grid > div {
     --pricing-metal-frame: linear-gradient(to bottom right, #bf953f, #fcf6ba, #aa771c);
     --pricing-card-surface:
       radial-gradient(ellipse 89% 175% at 5% -44%, rgba(211, 223, 226, 0.04) 0%, rgba(211, 223, 226, 0.022) 48%, transparent 86%) padding-box,
@@ -467,7 +471,7 @@
   }
 
   /* Match Portal's 8px frame and 50px outer / 42px inner corner radii. */
-  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div::before {
+  .luxury-preview:has(> main > section#home) .pricing-cards-grid > div::before {
     content: "";
     position: absolute;
     inset: -8px;
@@ -481,19 +485,19 @@
   }
 
   /* Retain selection state while keeping Portal's original frame palette on every card. */
-  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div.border-2 {
-    scale: 1.05;
+  .luxury-preview:has(> main > section#home) .pricing-cards-grid > div.border-2 {
+    scale: 1;
     z-index: 1;
   }
 
   @media (min-width: 1024px) {
-    .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div {
+    .luxury-preview:has(> main > section#home) .pricing-cards-grid > div {
       padding: 30px;
     }
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div:hover {
+    .luxury-preview:has(> main > section#home) .pricing-cards-grid > div:hover {
       scale: 1.05;
       translate: 0 -15px;
       z-index: 2;
@@ -501,25 +505,25 @@
     }
   }
 
-  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div:active {
+  .luxury-preview:has(> main > section#home) .pricing-cards-grid > div:active {
     scale: 0.98;
   }
 
   /* Emerald interior trial: white card copy; quote button colours remain untouched. */
-  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div h3,
-  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div p,
-  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div li,
-  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div li svg,
-  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div > .text-primary-foreground {
+  .luxury-preview:has(> main > section#home) .pricing-cards-grid > div h3,
+  .luxury-preview:has(> main > section#home) .pricing-cards-grid > div p,
+  .luxury-preview:has(> main > section#home) .pricing-cards-grid > div li,
+  .luxury-preview:has(> main > section#home) .pricing-cards-grid > div li svg,
+  .luxury-preview:has(> main > section#home) .pricing-cards-grid > div > .text-primary-foreground {
     color: #ffffff !important;
   }
 
-  .luxury-preview:has(> main > section#home) > main > section#pricing .grid > div > .bg-muted\/50 {
+  .luxury-preview:has(> main > section#home) .pricing-cards-grid > div > .bg-muted\/50 {
     background: rgba(0, 17, 13, 0.28);
   }
 
   /* Landing quote buttons: smooth satin gold, darker edges and a brighter centre. */
-  .luxury-preview:has(> main > section#home) > main > section#pricing button.w-full {
+  .luxury-preview:has(> main > section#home) .pricing-cards-grid button.w-full {
     background:
       linear-gradient(90deg, #97753a 0%, #a98a48 10%, #bea263 18%, #ceb781 26%, #d8c395 34%, #ddcc9b 41%, #dfce9d 50%, #ddcc9b 59%, #d8c395 66%, #ceb781 74%, #bea263 82%, #a98a48 90%, #97753a 100%);
     color: #0e3b30 !important;

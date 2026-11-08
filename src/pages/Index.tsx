@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
@@ -8,12 +8,13 @@ import About from "@/components/About";
 import Services from "@/components/Services";
 import ImpressiveService from "@/components/ImpressiveService";
 import Features from "@/components/Features";
-import Pricing from "@/components/Pricing";
+import Pricing, { type VehicleType } from "@/components/Pricing";
 import BookingSection from "@/components/BookingSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
   const location = useLocation();
+  const [selectedVehicle, setSelectedVehicle] = useState<VehicleType>("car");
 
   useEffect(() => {
     const hash = location.hash?.replace("#", "");
@@ -49,9 +50,10 @@ const Index = () => {
         <Services />
         <ImpressiveService />
         <Features />
-        <Pricing />
-        <ImpressiveService descriptionOverride="Capacity shown is a recommendation, not a restriction or guarantee. Actual comfort and luggage capacity may vary depending on passenger size, age, seating arrangement, and luggage size." />
-        <Features compact />
+        <Pricing selectedVehicle={selectedVehicle} onVehicleChange={setSelectedVehicle}>
+          <ImpressiveService titleOverride="Recommended Passenger & Luggage Capacity" descriptionOverride="Capacity shown is a recommendation, not a restriction or guarantee. Actual comfort and luggage capacity may vary depending on passenger size, age, seating arrangement, and luggage size." />
+          <Features compact vehicleType={selectedVehicle} />
+        </Pricing>
         <BookingSection />
       </main>
       <Footer />

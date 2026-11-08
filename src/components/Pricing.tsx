@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,26 +7,23 @@ import { useCurrencyConverter } from "@/hooks/useCurrencyConverter";
 import { currencies } from "@/data/pricingDataComplete";
 import { cn } from "@/lib/utils";
 
-// ============================================
-// PRICING SECTION — Level 1 shell + Level 3 interactive
-// L1: Static cards with THB starting prices
-// L3: Vehicle toggle, currency conversion (loaded silently)
-// ============================================
+export type VehicleType = "car" | "van" | "bus";
 
-type VehicleType = "car" | "van" | "bus";
-
-// Starting prices (lowest standard price per vehicle from pricingDataComplete)
-const STARTING_PRICES: Record<VehicleType, number> = {
-  car: 1100,  // Airport Bangkok - Don Mueang
-  van: 1400,  // Airport Bangkok - Don Mueang
-  bus: 6000,  // Airport Bangkok - Don Mueang
+type PricingProps = {
+  selectedVehicle: VehicleType;
+  onVehicleChange: (vehicle: VehicleType) => void;
+  children?: ReactNode;
 };
 
-const Pricing = () => {
-  const { t } = useLevel2Language();
-  const [selectedVehicle, setSelectedVehicle] = useState<VehicleType>("car");
-  const { selectedCurrency, setSelectedCurrency, convertPrice } = useCurrencyConverter();
+const STARTING_PRICES: Record<VehicleType, number> = {
+  car: 1100,
+  van: 1400,
+  bus: 6000,
+};
 
+const Pricing = ({ selectedVehicle, onVehicleChange, children }: PricingProps) => {
+  const { t } = useLevel2Language();
+  const { selectedCurrency, setSelectedCurrency, convertPrice } = useCurrencyConverter();
   const currencyInfo = currencies.find(c => c.code === selectedCurrency) || currencies[0];
 
   const formatStartingPrice = useCallback((priceTHB: number): string => {
@@ -39,43 +36,39 @@ const Pricing = () => {
     {
       vehicle: "car",
       name: t('pricing.car', 'Car'),
-      passengers: t('pricing.carPassengers', 'Up to 3 passengers'),
-      desc: t('pricing.carDesc', 'Perfect for solo travelers or small groups'),
+      passengers: t('pricing.carCategory', 'Sedan & SUV options'),
+      desc: t('pricing.carDesc', 'Choose the vehicle that best fits your passengers and luggage'),
       features: [
-        t('pricing.comfortableSedan', 'Comfortable Sedan'),
+        t('pricing.carOptions', 'Sedan and SUV options'),
         t('pricing.airportPickup', 'Airport Pickup'),
         t('pricing.airConditioning', 'Air Conditioning'),
         t('pricing.professionalDriver', 'Professional Driver'),
-        t('pricing.luggageSpace', 'Luggage Space'),
       ],
       popular: false,
     },
     {
       vehicle: "van",
       name: t('pricing.van', 'Van'),
-      passengers: t('pricing.vanPassengers', 'Up to 10 passengers'),
-      desc: t('pricing.vanDesc', 'Ideal for families and medium groups'),
+      passengers: t('pricing.vanCategory', 'Standard and Executive Van options'),
+      desc: t('pricing.vanDesc', 'Choose the vehicle that best fits your passengers and luggage'),
       features: [
-        t('pricing.spaciousMinivan', 'Spacious Minivan'),
+        t('pricing.vanOptions', 'Standard and Executive Van options'),
         t('pricing.airportPickup', 'Airport Pickup'),
         t('pricing.airConditioning', 'Air Conditioning'),
         t('pricing.professionalDriver', 'Professional Driver'),
-        t('pricing.extraLuggageSpace', 'Extra Luggage Space'),
       ],
       popular: true,
     },
     {
       vehicle: "bus",
       name: t('pricing.bus', 'Bus'),
-      passengers: t('pricing.busPassengers', 'Up to 40 passengers'),
-      desc: t('pricing.busDesc', 'Best for large groups and events'),
+      passengers: t('pricing.busCategory', 'Minibus and Medium Bus options'),
+      desc: t('pricing.busDesc', 'For larger groups and organized travel'),
       features: [
-        t('pricing.fullSizeBus', 'Full-Size Bus'),
+        t('pricing.busOptions', 'Minibus and Medium Bus options'),
         t('pricing.airportPickup', 'Airport Pickup'),
         t('pricing.airConditioning', 'Air Conditioning'),
         t('pricing.professionalDriver', 'Professional Driver'),
-        t('pricing.maxLuggageCapacity', 'Max Luggage Capacity'),
-        t('pricing.tourGuideOption', 'Tour Guide Option'),
       ],
       popular: false,
     },
@@ -86,9 +79,9 @@ const Pricing = () => {
   };
 
   return (
-    <section id="pricing" className="py-16 md:py-20 bg-muted">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-8">
+    <section id="pricing" className="bg-muted">
+      <div className="container mx-auto px-4 pt-16 md:pt-20">
+        <div className="text-center mb-8" style={{ transform: "translateY(-15px)" }}>
           <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-semibold text-primary mb-4">
             {t('pricing.title', 'Simple & Transparent Pricing')}
           </h2>
@@ -96,53 +89,55 @@ const Pricing = () => {
             {t('pricing.description', 'Choose your vehicle type. Prices vary by route and distance.')}
           </p>
 
-          {/* Vehicle Toggle */}
-          <div className="flex justify-center gap-2 mb-4">
-            {(["car", "van", "bus"] as VehicleType[]).map((v) => (
+          <div className="flex justify-center gap-2">
+            {(["car", "van", "bus"] as VehicleType[]).map((vehicle) => (
               <button
-                key={v}
-                onClick={() => setSelectedVehicle(v)}
-                aria-pressed={selectedVehicle === v}
+                key={vehicle}
+                onClick={() => onVehicleChange(vehicle)}
+                aria-pressed={selectedVehicle === vehicle}
                 className={cn(
                   "px-4 py-2 rounded-full text-sm font-medium transition-all",
-                  selectedVehicle === v
+                  selectedVehicle === vehicle
                     ? "bg-primary text-primary-foreground shadow-soft"
                     : "bg-card text-muted-foreground hover:bg-card/80 hover:text-foreground border border-border"
                 )}
               >
-                {v === "car" ? t('pricing.car', 'Car') : v === "van" ? t('pricing.van', 'Van') : t('pricing.bus', 'Bus')}
+                {vehicle === "car" ? t('pricing.car', 'Car') : vehicle === "van" ? t('pricing.van', 'Van') : t('pricing.bus', 'Bus')}
               </button>
             ))}
           </div>
+        </div>
+      </div>
 
-          {/* Currency Selector */}
-          <div className="flex justify-center items-center gap-2">
-            <span className="text-sm text-muted-foreground">{t('pricingPage.currency', 'Currency')}:</span>
-            <select
-              value={selectedCurrency}
-              onChange={(e) => setSelectedCurrency(e.target.value)}
-              className="px-3 py-1.5 text-sm border border-border rounded-lg bg-card text-foreground cursor-pointer hover:border-primary/50 transition-colors focus:outline-none focus:border-primary"
-            >
-              {currencies.map((c) => (
-                <option key={c.code} value={c.code}>
-                  {c.symbol} {c.code}
-                </option>
-              ))}
-            </select>
-          </div>
+      {children}
+
+      <div className="container mx-auto px-4 pb-16 md:pb-20">
+        <div className="flex justify-center items-center gap-2 mb-8">
+          <span className="text-sm text-muted-foreground">{t('pricingPage.currency', 'Currency')}:</span>
+          <select
+            value={selectedCurrency}
+            onChange={(e) => setSelectedCurrency(e.target.value)}
+            className="px-3 py-1.5 text-sm border border-border rounded-lg bg-card text-foreground cursor-pointer hover:border-primary/50 transition-colors focus:outline-none focus:border-primary"
+          >
+            {currencies.map((currency) => (
+              <option key={currency.code} value={currency.code}>
+                {currency.symbol} {currency.code}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
+        <div className="pricing-cards-grid grid grid-cols-1 md:grid-cols-3 items-stretch gap-6 lg:gap-8 max-w-5xl mx-auto">
           {pricingPlans.map((plan, index) => {
             const isSelected = plan.vehicle === selectedVehicle;
             return (
               <div
                 key={index}
-                onClick={() => setSelectedVehicle(plan.vehicle)}
+                onClick={() => onVehicleChange(plan.vehicle)}
                 className={cn(
-                  "relative bg-card rounded-xl shadow-soft hover:shadow-medium hover:scale-105 hover:z-10 transition-all p-6 lg:p-8 cursor-pointer",
+                  "relative h-full flex flex-col bg-card rounded-xl shadow-soft hover:shadow-medium hover:scale-105 hover:z-10 transition-all p-6 lg:p-8 cursor-pointer",
                   isSelected
-                    ? "border-2 border-primary md:scale-105 ring-2 ring-primary/20 shadow-medium z-10"
+                    ? "border-2 border-primary ring-2 ring-primary/20 shadow-medium z-10"
                     : "border border-border hover:border-primary/30",
                   plan.popular && !isSelected && "border-primary/50"
                 )}
@@ -157,11 +152,18 @@ const Pricing = () => {
                   <h3 className="font-heading text-xl lg:text-2xl font-bold text-foreground mb-1">
                     {plan.name}
                   </h3>
-                  <p className="text-primary font-semibold">{plan.passengers}</p>
+                  <p className="text-primary font-semibold">
+                    {plan.vehicle === "car" ? (
+                      <>
+                        {plan.passengers.replace(/\s+options$/i, "")}
+                        <br />
+                        options
+                      </>
+                    ) : plan.passengers}
+                  </p>
                   <p className="text-muted-foreground text-sm mt-2">{plan.desc}</p>
                 </div>
 
-                {/* Starting Price */}
                 <div className="text-center mb-6 py-3 bg-muted/50 rounded-lg">
                   <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                     {t('pricing.startingFrom', 'Starting from')}
@@ -182,8 +184,8 @@ const Pricing = () => {
 
                 <Button
                   variant={isSelected ? "cta" : "outline"}
-                  className="w-full"
-                  onClick={(e) => { e.stopPropagation(); scrollToBooking(); }}
+                  className="w-full mt-auto"
+                  onClick={(event) => { event.stopPropagation(); scrollToBooking(); }}
                 >
                   {t('pricing.getQuote', 'Get a Quote')}
                 </Button>
