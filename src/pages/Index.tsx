@@ -54,7 +54,7 @@ const Index = () => {
           <ImpressiveService titleOverride="Recommended Passenger & Luggage Capacity" descriptionOverride="Capacity shown is a recommendation, not a restriction or guarantee. Actual comfort and luggage capacity may vary depending on passenger size, age, seating arrangement, and luggage size." />
           <Features compact vehicleType={selectedVehicle} />
         </Pricing>
-        <BookingSection />
+        <BookingSection selectedVehicle={selectedVehicle} />
       </main>
       <Footer />
 

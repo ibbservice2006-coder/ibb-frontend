@@ -12,6 +12,7 @@ export type VehicleType = "car" | "van" | "bus";
 type PricingProps = {
   selectedVehicle: VehicleType;
   onVehicleChange: (vehicle: VehicleType) => void;
+  onGetQuote?: (vehicle: VehicleType) => void;
   children?: ReactNode;
 };
 
@@ -21,7 +22,7 @@ const STARTING_PRICES: Record<VehicleType, number> = {
   bus: 6000,
 };
 
-const Pricing = ({ selectedVehicle, onVehicleChange, children }: PricingProps) => {
+const Pricing = ({ selectedVehicle, onVehicleChange, onGetQuote, children }: PricingProps) => {
   const { t } = useLevel2Language();
   const { selectedCurrency, setSelectedCurrency, convertPrice } = useCurrencyConverter();
   const currencyInfo = currencies.find(c => c.code === selectedCurrency) || currencies[0];
@@ -185,7 +186,12 @@ const Pricing = ({ selectedVehicle, onVehicleChange, children }: PricingProps) =
                 <Button
                   variant={isSelected ? "cta" : "outline"}
                   className="w-full mt-auto"
-                  onClick={(event) => { event.stopPropagation(); scrollToBooking(); }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onVehicleChange(plan.vehicle);
+                    onGetQuote?.(plan.vehicle);
+                    scrollToBooking();
+                  }}
                 >
                   {t('pricing.getQuote', 'Get a Quote')}
                 </Button>

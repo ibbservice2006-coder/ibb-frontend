@@ -12,6 +12,7 @@ import BookingConfirmationDialog, { type BookingReviewData } from "@/components/
 import LocationAutocomplete from "@/components/booking/LocationAutocomplete";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "sonner";
+import type { VehicleType } from "@/components/Pricing";
 
 const IBB_BOOKING_API = "https://ibb-booking-api.ibb-service2006.workers.dev";
 
@@ -24,7 +25,11 @@ const pickupMinutes = Array.from({ length: 60 }, (_, minute) => String(minute).p
  * Submits to ibb-booking-api (Cloudflare Worker).
  */
 
-const BookingSection = () => {
+type BookingSectionProps = {
+  selectedVehicle?: VehicleType | null;
+};
+
+const BookingSection = ({ selectedVehicle }: BookingSectionProps) => {
   const { t } = useLevel2Language();
 
   const vehicleTypes = [
@@ -63,6 +68,11 @@ const BookingSection = () => {
 
   // Check if user is authenticated (without requiring AuthProvider)
   const [authUser, setAuthUser] = useState<{ id: string; profileId: string | null } | null>(null);
+
+  useEffect(() => {
+    if (!selectedVehicle) return;
+    setFormData((prev) => ({ ...prev, vehicleType: selectedVehicle }));
+  }, [selectedVehicle]);
 
   useEffect(() => {
     const checkAuth = async () => {
