@@ -427,6 +427,14 @@
       0 0 26px rgba(226, 237, 239, 0.2);
   }
 
+  /* Vehicle coverage cards: layered gold glow for comparison with Portal/Safety cards. */
+  .vehicle-coverage-card:hover {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.42),
+      0 16px 34px rgba(2, 24, 19, 0.34),
+      0 0 26px rgba(245, 230, 168, 0.55);
+  }
+
   .luxury-preview > main > section.bg-secondary .text-secondary-foreground,
   .luxury-preview > main > section.bg-secondary .text-white,
   .luxury-preview > main > section.bg-secondary [class*="text-white/"] {

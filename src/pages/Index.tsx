@@ -50,6 +50,8 @@ const Index = () => {
         <ImpressiveService />
         <Features />
         <Pricing />
+        <ImpressiveService descriptionOverride="Capacity shown is a recommendation, not a restriction or guarantee. Actual comfort and luggage capacity may vary depending on passenger size, age, seating arrangement, and luggage size." />
+        <Features compact />
         <BookingSection />
       </main>
       <Footer />

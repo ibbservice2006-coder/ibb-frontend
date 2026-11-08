@@ -1,6 +1,10 @@
 import { useLevel2Language } from "@/hooks/useLevel2Language";
 
-const ImpressiveService = () => {
+interface ImpressiveServiceProps {
+  descriptionOverride?: string;
+}
+
+const ImpressiveService = ({ descriptionOverride }: ImpressiveServiceProps) => {
   const { t } = useLevel2Language();
 
   return (
@@ -10,7 +14,7 @@ const ImpressiveService = () => {
           {t('impressive.title', 'Impressive Service Coverage')}
         </h3>
         <p className="text-secondary-foreground/90 text-base md:text-lg max-w-2xl mx-auto">
-          {t('impressive.description', 'We cover all major destinations across Thailand, from Bangkok to Chiang Mai, Phuket, and beyond.')}
+          {descriptionOverride ?? t('impressive.description', 'We cover all major destinations across Thailand, from Bangkok to Chiang Mai, Phuket, and beyond.')}
         </p>
       </div>
     </section>
